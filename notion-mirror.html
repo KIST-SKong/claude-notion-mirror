@@ -1,0 +1,2923 @@
+<title>Notion 미러</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<style>
+/* Layout: Notion-style workspace — warm-gray sidebar on the left, a centered 708px page column on the right; sidebar becomes a bottom sheet on phones */
+:root{
+  --bg:#FFFFFF; --side:#F7F7F5; --side-ink:#5F5E5B; --ink:#37352F; --muted:#787774; --faint:#A5A29A;
+  --line:#E9E9E7; --hover:rgba(55,53,47,.06); --hover-2:rgba(55,53,47,.1);
+  --accent:#2383E2; --accent-ink:#FFFFFF; --accent-soft:#E7F3F8; --danger:#E03E3E; --ok:#448361;
+  --menu:#FFFFFF; --shadow:rgba(15,15,15,.12);
+  --hl-gray:#F1F1EF; --hl-brown:#F4EEEE; --hl-orange:#FBECDD; --hl-yellow:#FBF3DB; --hl-green:#EDF3EC;
+  --hl-blue:#E7F3F8; --hl-purple:#F6F3F9; --hl-pink:#FAF1F5; --hl-red:#FDEBEC;
+  --tx-gray:#787774; --tx-brown:#9F6B53; --tx-orange:#D9730D; --tx-yellow:#CB912F; --tx-green:#448361;
+  --tx-blue:#337EA9; --tx-purple:#9065B0; --tx-pink:#C14C8A; --tx-red:#D44C47;
+  --f-body:ui-sans-serif,-apple-system,BlinkMacSystemFont,"Segoe UI","Malgun Gothic","Apple SD Gothic Neo",Helvetica,Arial,sans-serif;
+  --f-mono:"SFMono-Regular",Menlo,Consolas,"D2Coding",ui-monospace,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#191919; --side:#202020; --side-ink:#9B9B9B; --ink:#E3E2E0; --muted:#9B9B9B; --faint:#5F5F5F;
+  --line:#2F2F2F; --hover:rgba(255,255,255,.055); --hover-2:rgba(255,255,255,.09);
+  --accent:#529CCA; --accent-ink:#0B1A24; --accent-soft:#1F2D36; --danger:#FF7369; --ok:#6CBF8C;
+  --menu:#252525; --shadow:rgba(0,0,0,.5);
+  --hl-gray:#2F2F2F; --hl-brown:#4A3228; --hl-orange:#5C3B23; --hl-yellow:#564328; --hl-green:#243D30;
+  --hl-blue:#143A4E; --hl-purple:#3C2D49; --hl-pink:#4E2C3C; --hl-red:#522E2A;
+  --tx-gray:#9B9B9B; --tx-brown:#BA856F; --tx-orange:#C77D48; --tx-yellow:#CA9849; --tx-green:#529E72;
+  --tx-blue:#5E87C9; --tx-purple:#9D68D3; --tx-pink:#D15796; --tx-red:#DF5452; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#191919; --side:#202020; --side-ink:#9B9B9B; --ink:#E3E2E0; --muted:#9B9B9B; --faint:#5F5F5F;
+  --line:#2F2F2F; --hover:rgba(255,255,255,.055); --hover-2:rgba(255,255,255,.09);
+  --accent:#529CCA; --accent-ink:#0B1A24; --accent-soft:#1F2D36; --danger:#FF7369; --ok:#6CBF8C;
+  --menu:#252525; --shadow:rgba(0,0,0,.5);
+  --hl-gray:#2F2F2F; --hl-brown:#4A3228; --hl-orange:#5C3B23; --hl-yellow:#564328; --hl-green:#243D30;
+  --hl-blue:#143A4E; --hl-purple:#3C2D49; --hl-pink:#4E2C3C; --hl-red:#522E2A;
+  --tx-gray:#9B9B9B; --tx-brown:#BA856F; --tx-orange:#C77D48; --tx-yellow:#CA9849; --tx-green:#529E72;
+  --tx-blue:#5E87C9; --tx-purple:#9D68D3; --tx-pink:#D15796; --tx-red:#DF5452; color-scheme:dark}
+
+html,body{height:100%}
+body{background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:14px;line-height:1.5;-webkit-font-smoothing:antialiased}
+button,input,select,textarea{font:inherit;color:inherit}
+:focus-visible{outline:2px solid var(--accent);outline-offset:1px}
+.btn{border:1px solid var(--line);background:var(--bg);border-radius:6px;padding:4px 10px;cursor:pointer;display:inline-flex;align-items:center;gap:6px;font-size:14px;white-space:nowrap}
+.btn:hover{background:var(--hover)}
+.btn.primary{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+.btn.primary:hover{filter:brightness(1.05)}
+.btn.ghost{border-color:transparent;background:transparent;color:var(--muted)}
+.btn.danger{background:var(--danger);color:#FFFFFF;border-color:var(--danger)}
+.btn.ghost.danger{background:transparent;color:var(--muted);border-color:transparent}
+.btn.ghost.danger:hover{color:var(--danger)}
+.confirm{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(20px + env(safe-area-inset-bottom,0px));z-index:30;background:var(--menu);box-shadow:0 0 0 1px var(--line),0 8px 24px var(--shadow);border-radius:8px;padding:10px 12px;display:flex;gap:8px;align-items:center;flex-wrap:wrap;max-width:calc(100% - 32px);font-size:14px}
+.confirm .cm{flex:1 1 220px;min-width:0}
+.del-btn{padding:0 5px}
+.grid tr:hover .del-btn:hover{color:var(--danger);border-color:var(--danger)}
+.btn.ghost:hover{background:var(--hover);color:var(--ink)}
+.btn[disabled]{opacity:.5;cursor:default}
+
+.app{display:grid;grid-template-columns:248px minmax(0,1fr);height:100%}
+.col{display:grid;grid-template-rows:auto 1fr;min-width:0;min-height:0}
+
+/* sidebar */
+.side{background:var(--side);color:var(--side-ink);overflow-y:auto;padding:10px 8px 24px;display:flex;flex-direction:column;gap:14px;min-height:0}
+.ws{display:flex;align-items:center;gap:8px;padding:4px 8px}
+.ws .mark{width:22px;height:22px;border-radius:4px;background:var(--ink);color:var(--bg);display:grid;place-items:center;font-size:12px;font-weight:700;flex:none}
+.ws .name{font-weight:600;color:var(--ink);font-size:14px;flex:1;min-width:0}
+.dot{width:7px;height:7px;border-radius:50%;background:var(--faint);flex:none}
+.dot.ok{background:var(--ok)} .dot.bad{background:var(--danger)}
+.search{display:flex;padding:0 4px}
+.search input{flex:1;min-width:0;border:1px solid var(--line);border-radius:6px;padding:4px 8px;background:var(--bg)}
+.sec-title{font-size:12px;font-weight:600;color:var(--muted);padding:0 8px 2px}
+.list{display:flex;flex-direction:column;gap:1px}
+.item{display:flex;align-items:center;gap:6px;width:100%;text-align:left;border:0;background:transparent;border-radius:5px;padding:3px 8px;min-height:28px;cursor:pointer;font-size:14px;color:var(--side-ink)}
+.item:hover{background:var(--hover-2)}
+.item.active{background:var(--hover-2);color:var(--ink);font-weight:600}
+.item .ic{width:20px;flex:none;text-align:center}
+.item .t{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.item .sub{display:block;font-size:11px;color:var(--muted);font-weight:400;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.item.new{color:var(--muted)}
+.sec-title.row{display:flex;align-items:center;justify-content:space-between}
+.sec-title .mini{border:0;background:transparent;color:var(--muted);cursor:pointer;border-radius:4px;padding:0 6px;font-size:14px}
+.sec-title .mini:hover{background:var(--hover-2);color:var(--ink)}
+.trow{display:flex;align-items:center}
+.trow .item{flex:1;min-width:0;padding-left:2px}
+.tg{flex:none;width:20px;height:24px;border:0;background:transparent;color:var(--faint);cursor:pointer;border-radius:4px;font-size:10px;padding:0}
+.tg:hover{background:var(--hover-2);color:var(--ink)}
+.tg.sp{cursor:default;pointer-events:none}
+.tg.rm{width:22px;opacity:0;font-size:11px}
+.trow:hover .tg.rm,.tg.rm:focus-visible{opacity:1}
+@media (hover:none){.tg.rm{opacity:1}}
+.share-add{display:flex;flex-direction:column;gap:4px;padding:2px 4px 6px}
+.share-add input{border:1px solid var(--line);border-radius:6px;padding:4px 8px;background:var(--bg);min-width:0}
+.share-add .item[disabled]{opacity:.55;cursor:default}
+.tkids{padding-left:14px}
+.tkids .note{padding:2px 8px 2px 8px;font-size:12px}
+.note{font-size:13px;color:var(--muted);padding:4px 8px}
+.err{font-size:13px;color:var(--danger);padding:6px 8px;display:flex;flex-direction:column;gap:6px;align-items:flex-start}
+
+/* top bar */
+.top{display:flex;align-items:center;gap:6px;height:45px;padding-left:max(12px,env(safe-area-inset-left,0px));padding-right:max(12px,env(safe-area-inset-right,0px))}
+.crumbs{display:flex;align-items:center;gap:2px;min-width:0;flex:1;overflow:hidden;font-size:14px;white-space:nowrap}
+.crumbs button{border:0;background:none;cursor:pointer;padding:2px 6px;border-radius:4px;color:var(--muted);overflow:hidden;text-overflow:ellipsis;max-width:180px}
+.crumbs button:hover{background:var(--hover)}
+.crumbs .sep{color:var(--faint)}
+.crumbs .self{padding:2px 6px;overflow:hidden;text-overflow:ellipsis}
+.save{font-size:13px;color:var(--muted);display:flex;align-items:center;gap:6px}
+.save.bad{color:var(--danger);white-space:nowrap}
+.menu-toggle{display:none}
+
+/* page */
+.main{overflow-y:auto;min-width:0}
+.wrap{max-width:900px;margin:0 auto;padding-block:40px 30vh;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));display:flex;flex-direction:column;gap:10px}
+@media (min-width:900px){.wrap{padding-left:max(96px,env(safe-area-inset-left,0px));padding-right:max(96px,env(safe-area-inset-right,0px))}}
+.pg-icon{font-size:72px;line-height:1.1}
+.title{font-size:40px;font-weight:700;line-height:1.2;margin:0;outline:none;overflow-wrap:anywhere;text-wrap:balance;cursor:text}
+.title:empty::before{content:attr(data-ph);color:var(--faint)}
+.pg-meta{display:flex;flex-wrap:wrap;gap:4px 10px;align-items:center;font-size:13px;color:var(--muted)}
+.props{display:grid;grid-template-columns:minmax(90px,max-content) minmax(0,1fr);gap:4px 16px;font-size:14px;padding-block:6px;border-bottom:1px solid var(--line)}
+.props dt{color:var(--muted)} .props dd{margin:0;overflow-wrap:anywhere}
+.lock{font-size:13px;color:var(--muted);background:var(--hl-gray);border-radius:4px;padding:8px 10px}
+
+.chip{display:inline-block;padding:0 6px;border-radius:3px;font-size:12px;background:var(--hl-gray);white-space:nowrap}
+.chip.c-gray{background:var(--hl-gray)} .chip.c-brown{background:var(--hl-brown)} .chip.c-orange{background:var(--hl-orange)}
+.chip.c-yellow{background:var(--hl-yellow)} .chip.c-green{background:var(--hl-green)} .chip.c-blue{background:var(--hl-blue)}
+.chip.c-purple{background:var(--hl-purple)} .chip.c-pink{background:var(--hl-pink)} .chip.c-red{background:var(--hl-red)}
+
+/* blocks */
+.doc{font-size:16px;line-height:1.5;overflow-wrap:anywhere;display:flex;flex-direction:column;margin-top:8px}
+.blk{position:relative;padding:3px 2px;min-height:30px;border-radius:3px}
+.blk.can{cursor:text}
+.blk .handle{position:absolute;left:-30px;top:3px;width:24px;height:24px;border:0;border-radius:4px;background:transparent;color:var(--faint);font-size:18px;line-height:1;cursor:pointer;opacity:0;display:none}
+@media (min-width:900px) and (hover:hover){.blk .handle{display:block}}
+.blk:hover .handle{opacity:1}
+.blk .handle:hover{background:var(--hover-2);color:var(--muted)}
+.blk-edit{display:block;width:100%;border:0;outline:0;resize:none;background:transparent;padding:0;margin:0;font:inherit;line-height:1.5;color:var(--ink);overflow:hidden;min-height:1.5em;caret-color:var(--ink)}
+.blk-edit::placeholder{color:var(--faint)}
+.blk.editing{box-shadow:inset 2px 0 0 var(--accent);padding-left:10px;margin-left:-10px;background:var(--hover)}
+.blk.editing.code .blk-edit{font-family:var(--f-mono);font-size:14px}
+.doc h2{font-size:1.875em;font-weight:600;line-height:1.3;margin:.6em 0 0} .doc h3{font-size:1.5em;font-weight:600;line-height:1.3;margin:.5em 0 0} .doc h4{font-size:1.25em;font-weight:600;line-height:1.3;margin:.4em 0 0}
+.doc p{margin:0} .doc ul,.doc ol{margin:0;padding-left:1.6em}
+.doc li{margin:1px 0}
+.doc ul.todo{list-style:none;padding-left:0}
+.doc li.chk{display:block;position:relative;padding-left:26px}
+.doc li.chk>.box{position:absolute;left:2px;top:.3em;width:16px;height:16px;border:1.5px solid var(--ink);border-radius:2px;cursor:pointer}
+.doc li.chk.done>.box{background:var(--accent);border-color:var(--accent)}
+.doc li.chk.done>.box::after{content:"";position:absolute;left:4px;top:0;width:5px;height:10px;border:solid var(--accent-ink);border-width:0 2px 2px 0;transform:rotate(45deg)}
+.doc li.chk.done>.txt{color:var(--muted);text-decoration:line-through}
+.doc blockquote{margin:0;padding:0 0 0 14px;border-left:3px solid currentColor;font-size:1.05em}
+.doc pre{background:var(--hl-gray);padding:24px 16px;border-radius:4px;overflow-x:auto;font-family:var(--f-mono);font-size:14px;margin:4px 0}
+.doc code{font-family:var(--f-mono);font-size:.85em;background:var(--hl-gray);color:var(--tx-red);padding:2px 4px;border-radius:3px}
+.doc pre code{background:none;padding:0;color:inherit}
+.doc hr{border:0;border-top:1px solid var(--line);margin:10px 0}
+.doc .tbl{overflow-x:auto} .doc table{border-collapse:collapse;font-size:14px} .doc td,.doc th{border:1px solid var(--line);padding:6px 8px;vertical-align:top}
+.doc .callout{display:flex;gap:10px;background:var(--hl-gray);padding:14px 16px;border-radius:4px}
+.doc .cols{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:24px}
+.doc summary{cursor:pointer}
+.doc .unk{font-size:13px;color:var(--muted);font-style:italic}
+.doc a{color:inherit;text-decoration:underline;text-decoration-color:var(--faint);text-underline-offset:2px}
+.link-int{border:0;background:none;color:inherit;cursor:pointer;padding:0;text-decoration:underline;text-decoration-color:var(--faint);text-underline-offset:2px;font:inherit;font-weight:500}
+.block-link{display:flex;align-items:center;gap:6px;padding:2px 2px;border-radius:3px;border:0;background:transparent;cursor:pointer;width:100%;text-align:left;font:inherit;color:inherit;font-weight:500;text-decoration:underline;text-decoration-color:var(--line);text-underline-offset:3px}
+.block-link:hover{background:var(--hover)}
+.c-gray{color:var(--tx-gray)} .c-brown{color:var(--tx-brown)} .c-orange{color:var(--tx-orange)} .c-yellow{color:var(--tx-yellow)}
+.c-green{color:var(--tx-green)} .c-blue{color:var(--tx-blue)} .c-purple{color:var(--tx-purple)} .c-pink{color:var(--tx-pink)} .c-red{color:var(--tx-red)}
+.bg-gray{background:var(--hl-gray)} .bg-brown{background:var(--hl-brown)} .bg-orange{background:var(--hl-orange)} .bg-yellow{background:var(--hl-yellow)}
+.bg-green{background:var(--hl-green)} .bg-blue{background:var(--hl-blue)} .bg-purple{background:var(--hl-purple)} .bg-pink{background:var(--hl-pink)} .bg-red{background:var(--hl-red)}
+.tail{min-height:120px;cursor:text}
+.empty-hint{color:var(--faint);padding:3px 2px;cursor:text}
+
+/* slash menu */
+.slash{position:absolute;left:0;top:100%;z-index:6;margin-top:4px;width:min(300px,100%);max-height:320px;overflow-y:auto;background:var(--menu);border-radius:6px;box-shadow:0 0 0 1px var(--line),0 6px 20px var(--shadow);padding:6px 0;font-size:14px}
+.slash .cap{font-size:12px;color:var(--muted);padding:2px 12px 6px}
+.slash .opt{display:flex;align-items:center;gap:10px;padding:5px 12px;cursor:pointer}
+.slash .opt .sym{width:28px;height:28px;border:1px solid var(--line);border-radius:4px;display:grid;place-items:center;font-family:var(--f-mono);font-size:12px;color:var(--muted);background:var(--bg);flex:none}
+.slash .opt[aria-selected="true"]{background:var(--hover-2)}
+
+/* database */
+.toolbar{display:flex;flex-wrap:wrap;gap:8px;align-items:center;border-bottom:1px solid var(--line);padding-bottom:8px}
+.seg{display:inline-flex;gap:2px}
+.seg button{border:0;background:transparent;padding:4px 8px;cursor:pointer;font-size:14px;border-radius:4px;color:var(--muted)}
+.seg button[aria-pressed="true"]{color:var(--ink);box-shadow:inset 0 -2px 0 var(--ink);border-radius:0}
+.meta{font-size:12px;color:var(--muted);font-variant-numeric:tabular-nums}
+.rows{display:flex;flex-direction:column}
+.row{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:2px 12px;align-items:center;width:100%;text-align:left;border:0;border-bottom:1px solid var(--line);background:transparent;padding:8px 4px;cursor:pointer}
+.row:hover{background:var(--hover)}
+.row .rt{font-weight:500;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.row .rd{font-size:13px;color:var(--muted);font-variant-numeric:tabular-nums;white-space:nowrap}
+.row .rx{grid-column:1/-1;display:flex;flex-wrap:wrap;gap:6px;font-size:12px;color:var(--muted)}
+.cal-head{display:flex;align-items:center;gap:6px}
+.cal-head h2{margin:0 6px 0 0;font-size:16px;font-weight:600;font-variant-numeric:tabular-nums}
+.cal{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));border-top:1px solid var(--line);border-left:1px solid var(--line)}
+.cal .dow{font-size:12px;color:var(--muted);text-align:center;padding:4px 0;border-right:1px solid var(--line);border-bottom:1px solid var(--line)}
+.day{min-height:100px;border-right:1px solid var(--line);border-bottom:1px solid var(--line);padding:4px;display:flex;flex-direction:column;gap:2px;min-width:0;cursor:pointer}
+.day:hover{background:var(--hover)}
+.day.out{background:var(--hover)} .day.out .dn{opacity:.5}
+.day .dn{font-size:13px;text-align:right;font-variant-numeric:tabular-nums;color:var(--muted)}
+.day.today .dn{background:var(--danger);color:#FFFFFF;border-radius:50%;width:22px;height:22px;display:grid;place-items:center;align-self:flex-end}
+.day.sel{box-shadow:inset 0 0 0 2px var(--accent)}
+.ev{display:block;width:100%;border:0;text-align:left;font-size:12px;line-height:1.5;padding:2px 6px;border-radius:3px;background:var(--bg);box-shadow:0 0 0 1px var(--line),0 1px 2px var(--shadow);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;cursor:pointer;color:inherit}
+.more{font-size:11px;color:var(--muted);padding-left:4px}
+.day-list h3{font-size:15px;margin:0 0 6px}
+.form{border:1px solid var(--line);border-radius:6px;padding:14px;display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px}
+.form label{display:flex;flex-direction:column;gap:4px;font-size:13px;color:var(--muted)}
+.form input,.form select{border:1px solid var(--line);border-radius:5px;padding:5px 8px;background:var(--bg);color:var(--ink);min-width:0}
+.form .full{grid-column:1/-1}
+.form .acts{grid-column:1/-1;display:flex;gap:8px;justify-content:flex-end;flex-wrap:wrap;align-items:center}
+.form .msg{flex:1;font-size:13px;color:var(--danger)}
+
+/* database table */
+.wrap.wide{max-width:none}
+.dbbody{display:flex;flex-direction:column;gap:14px;min-width:0}
+.db-q{border:1px solid var(--line);border-radius:5px;padding:3px 8px;background:var(--bg);width:200px;max-width:100%;min-width:0}
+.sortctl{display:inline-flex;align-items:center;gap:6px}
+.sortctl select{border:1px solid var(--line);border-radius:5px;padding:3px 6px;background:var(--bg);color:var(--ink);max-width:160px}
+.gridwrap{overflow-x:auto;min-width:0;padding-bottom:4px}
+table.grid{border-collapse:separate;border-spacing:0;font-size:14px;table-layout:fixed}
+.grid th,.grid td{border-right:1px solid var(--line);border-bottom:1px solid var(--line);padding:0;vertical-align:top;background:var(--bg)}
+.grid th:last-child,.grid td:last-child{border-right:0}
+.grid thead th{border-top:1px solid var(--line);position:sticky;top:0;z-index:2;font-weight:400;color:var(--muted);text-align:left}
+.grid th>button{display:flex;gap:6px;align-items:center;width:100%;border:0;background:transparent;padding:7px 8px;cursor:pointer;color:inherit;text-align:left;font-size:14px}
+.grid th>button:hover{background:var(--hover)}
+.grid .tsym{font-family:var(--f-mono);font-size:11px;color:var(--faint);flex:none;min-width:14px}
+.grid .th-t{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.grid .sort{color:var(--accent);font-weight:700}
+.grid td:first-child,.grid th:first-child{position:sticky;left:0;z-index:1;box-shadow:1px 0 0 var(--line)}
+.grid thead th:first-child{z-index:3}
+.grid td.ed{cursor:text} .grid td.ro .cv{color:var(--muted)}
+.grid td:hover{background-image:linear-gradient(var(--hover),var(--hover))}
+.grid td:focus{outline:2px solid var(--accent);outline-offset:-2px}
+.grid .cv{display:flex;gap:4px;align-items:center;min-height:34px;padding:6px 8px;overflow:hidden;white-space:nowrap}
+.grid .cv .ct{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;font-weight:500}
+.grid .cv a{color:inherit;overflow:hidden;text-overflow:ellipsis}
+.open-btn{flex:none;font-size:12px;border:1px solid var(--line);border-radius:4px;padding:0 6px;background:var(--bg);color:var(--muted);cursor:pointer;opacity:0}
+.grid tr:hover .open-btn,.open-btn:focus-visible{opacity:1}
+@media (hover:none){.open-btn{opacity:1}}
+.cb{width:16px;height:16px;border:1.5px solid var(--muted);border-radius:3px;display:inline-block;position:relative;flex:none}
+.cb.on{background:var(--accent);border-color:var(--accent)}
+.cb.on::after{content:"";position:absolute;left:4px;top:0;width:5px;height:10px;border:solid var(--accent-ink);border-width:0 2px 2px 0;transform:rotate(45deg)}
+.cell-in{display:block;width:100%;min-height:34px;border:0;outline:2px solid var(--accent);outline-offset:-2px;padding:6px 8px;background:var(--bg);color:var(--ink);font:inherit;border-radius:0}
+.ms-pop{display:flex;flex-direction:column;gap:4px;padding:8px;background:var(--menu);outline:2px solid var(--accent);outline-offset:-2px}
+.ms-pop label{display:flex;gap:6px;align-items:center;cursor:pointer}
+.ms-pop .btn{align-self:flex-start;margin-top:4px}
+.newrow{background:var(--bg)}
+.grid thead th{overflow:visible}
+.rz{position:absolute;top:0;right:-4px;width:8px;height:100%;cursor:col-resize;z-index:4;touch-action:none}
+.rz:hover,.rz.on{background:linear-gradient(to right,transparent 3px,var(--accent) 3px,var(--accent) 5px,transparent 5px)}
+.rel-chip{flex:none;max-width:100%;border:0;border-radius:3px;padding:0 6px;background:var(--hl-gray);color:var(--ink);font-size:13px;line-height:1.6;cursor:pointer;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;text-decoration:underline;text-decoration-color:var(--faint);text-underline-offset:2px}
+.rel-chip:hover{background:var(--hover-2)}
+.grid.wrapc .cv{white-space:pre-line;flex-wrap:wrap;align-items:flex-start;overflow:visible}
+.grid.wrapc .cv .ct,.grid.wrapc .cv .tx{white-space:pre-line;overflow-wrap:anywhere}
+.cell-ta{resize:vertical;min-height:64px;line-height:1.5}
+.grid.wrapc .rel-chip{white-space:normal;text-align:left;flex:initial}
+.grid.wrapc .chip{white-space:normal}
+.grid.measure .cv{width:max-content;overflow:visible}
+.grid.measure .cv .ct{flex:none;overflow:visible}
+.grid.measure .rel-chip{max-width:none}
+.rel-pop{display:flex;flex-direction:column;gap:6px;padding:8px;background:var(--menu);outline:2px solid var(--accent);outline-offset:-2px;font-size:13px}
+.rel-sel{display:flex;flex-wrap:wrap;gap:4px}
+.rel-tag{display:inline-flex;align-items:center;gap:2px;background:var(--hl-blue);border-radius:3px;padding:0 0 0 6px;max-width:100%}
+.rel-tag>span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.rel-tag button{border:0;background:transparent;cursor:pointer;color:var(--muted);padding:0 5px;border-radius:3px}
+.rel-tag button:hover{background:var(--hover-2);color:var(--ink)}
+.rel-q{border:1px solid var(--line);border-radius:4px;padding:4px 6px;background:var(--bg);color:var(--ink);min-width:0}
+.rel-list{display:flex;flex-direction:column;max-height:220px;overflow-y:auto}
+.rel-opt{border:0;background:transparent;text-align:left;padding:4px 6px;border-radius:3px;cursor:pointer;color:var(--ink);white-space:normal;overflow-wrap:anywhere}
+.rel-opt:hover,.rel-opt:focus-visible{background:var(--hover-2)}
+.rel-acts{display:flex;gap:6px;flex-wrap:wrap}
+.io-host:empty,.flt-host:empty{display:none}
+.grid th.drop-before{box-shadow:inset 3px 0 0 var(--accent)}
+.grid th[draggable="true"] > button{cursor:grab}
+.col-list{display:flex;flex-direction:column;max-height:300px;overflow-y:auto}
+.col-row{display:flex;align-items:center;gap:4px;border-bottom:1px solid var(--line);padding:2px 0}
+.col-name{flex:1;min-width:0;display:flex;gap:8px;align-items:center;cursor:pointer;overflow-wrap:anywhere}
+.dt-pop{display:flex;flex-direction:column;gap:8px;padding:10px;background:var(--menu);outline:2px solid var(--accent);outline-offset:-2px;font-size:13px}
+.dt-pop label{display:flex;flex-direction:column;gap:3px;color:var(--muted)}
+.dt-pop label.dt-time{flex-direction:row;align-items:center;gap:6px}
+.dt-pop input[type="date"],.dt-pop input[type="datetime-local"]{border:1px solid var(--line);border-radius:5px;padding:4px 6px;background:var(--bg);color:var(--ink);min-width:0}
+.flt-row{display:flex;gap:6px;align-items:center;flex-wrap:wrap}
+.flt-row select,.flt-row input{border:1px solid var(--line);border-radius:5px;padding:4px 6px;background:var(--bg);color:var(--ink);min-width:0;max-width:200px}
+.io-panel{border:1px solid var(--line);border-radius:8px;padding:12px 14px;display:flex;flex-direction:column;gap:10px;background:var(--bg);margin-bottom:12px;max-width:760px}
+.io-head{display:flex;align-items:center;justify-content:space-between}
+.io-acts{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.io-line{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.io-maps{display:flex;flex-direction:column;gap:6px;max-height:320px;overflow-y:auto}
+.io-map{display:grid;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);gap:8px;align-items:center}
+.io-col{display:flex;flex-direction:column;min-width:0;overflow-wrap:anywhere}
+.io-map select,.io-line select{border:1px solid var(--line);border-radius:5px;padding:4px 6px;background:var(--bg);color:var(--ink);min-width:0}
+.io-prev{display:flex;flex-direction:column;gap:2px;font-size:13px}
+.io-prow{border-left:2px solid var(--line);padding-left:8px;overflow-wrap:anywhere}
+.io-notes{margin:0;padding-left:18px;font-size:13px;color:var(--muted)}
+.tbl-foot{display:flex;gap:6px;align-items:center;flex-wrap:wrap;font-size:13px;color:var(--muted);padding:6px 4px}
+.add-row{display:block;width:100%;text-align:left;border:0;background:transparent;color:var(--muted);padding:7px 8px;cursor:pointer;font-size:14px}
+.add-row:hover{background:var(--hover);color:var(--ink)}
+
+/* home */
+.hello h1{font-size:32px;font-weight:700;margin:0}
+.hello p{margin:4px 0 0;color:var(--muted)}
+.tiles{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:12px}
+.tile{display:flex;flex-direction:column;gap:8px;align-items:flex-start;text-align:left;border:0;background:var(--bg);box-shadow:0 0 0 1px var(--line),0 2px 4px var(--shadow);border-radius:8px;padding:14px;cursor:pointer;min-width:0;min-height:96px}
+.tile:hover{background:var(--hover)}
+.tile .ic{font-size:24px}
+.tile .t{font-weight:600;overflow-wrap:anywhere}
+.tile .k{font-size:12px;color:var(--muted)}
+.tile.add{color:var(--muted);justify-content:center;align-items:center;box-shadow:0 0 0 1px var(--line)}
+.sec-h{font-size:14px;font-weight:600;color:var(--muted);margin:14px 0 4px}
+.panel-msg{border:1px solid var(--line);border-radius:6px;padding:16px;display:flex;flex-direction:column;gap:8px;align-items:flex-start}
+.panel-msg h2{margin:0;font-size:16px}
+.panel-msg p{margin:0;color:var(--muted)}
+.skel{height:14px;border-radius:4px;background:var(--hover-2);margin:6px 8px}
+.toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(20px + env(safe-area-inset-bottom,0px));background:var(--ink);color:var(--bg);padding:8px 16px;border-radius:6px;font-size:14px;z-index:20;max-width:calc(100% - 32px)}
+
+@media (max-width:760px){
+  .menu-toggle{display:inline-flex}
+  .app{grid-template-columns:minmax(0,1fr)}
+  .side{position:fixed;inset:auto 0 0 0;height:78%;z-index:15;border-radius:14px 14px 0 0;box-shadow:0 -8px 30px var(--shadow);padding-bottom:calc(24px + env(safe-area-inset-bottom,0px));padding-left:max(10px,env(safe-area-inset-left,0px));padding-right:max(10px,env(safe-area-inset-right,0px))}
+  .side:not(.open){display:none}
+  .wrap{padding-block:24px 40vh}
+  .pg-icon{font-size:52px}
+  .title{font-size:30px}
+  .day{min-height:58px;padding:2px}
+  .ev{font-size:10px;padding:0 3px}
+  .crumbs button{max-width:110px}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+</style>
+
+<div class="app">
+  <aside class="side" id="side" aria-label="노트 목록">
+    <div class="ws">
+      <span class="mark" aria-hidden="true">N</span>
+      <span class="name">Notion 미러</span>
+      <span class="dot" id="dot" title="Notion 연결 확인 중"></span>
+    </div>
+    <form class="search" id="searchForm" role="search">
+      <input id="q" type="search" placeholder="검색 후 Enter" aria-label="노트 검색">
+    </form>
+    <div class="list">
+      <button class="item new" id="newPageBtn" type="button"><span class="ic" aria-hidden="true">＋</span><span class="t">새 페이지</span></button>
+      <button class="item" id="homeBtn" type="button"><span class="ic" aria-hidden="true">⌂</span><span class="t">홈</span></button>
+    </div>
+    <section id="secSearch" hidden>
+      <div class="sec-title">검색 결과</div>
+      <div class="list" id="searchList"></div>
+    </section>
+    <section id="secPins" hidden>
+      <div class="sec-title">고정됨</div>
+      <div class="list" id="pinList"></div>
+    </section>
+    <section>
+      <div class="sec-title row"><span>공유</span><span><button class="mini" id="shareAddBtn" type="button" title="공유된 페이지를 찾아서 이 목록에 추가" aria-label="공유 페이지 추가">＋</button><button class="mini" id="shareRefresh" type="button" title="공유 페이지와 하위 페이지 목록 새로고침" aria-label="공유 페이지와 하위 페이지 목록 새로고침">⟳</button></span></div>
+      <form class="share-add" id="shareAdd" hidden>
+        <input id="shareQ" type="search" autocomplete="off" placeholder="공유받은 페이지 이름 (예: 팀 위키)" aria-label="공유받은 페이지 검색">
+        <div class="list" id="shareFound"></div>
+      </form>
+      <div class="list" id="sharedList"><div class="skel"></div><div class="skel"></div></div>
+    </section>
+    <section>
+      <div class="sec-title">개인</div>
+      <div class="list" id="privList"><div class="skel"></div><div class="skel"></div><div class="skel"></div></div>
+    </section>
+    <section>
+      <div class="sec-title">최근</div>
+      <div class="list" id="recentList"><div class="skel"></div><div class="skel"></div></div>
+    </section>
+  </aside>
+  <div class="col">
+    <header class="top">
+      <button class="btn ghost menu-toggle" id="menuBtn" type="button" aria-expanded="false" aria-controls="side">☰</button>
+      <button class="btn ghost" id="backBtn" type="button" hidden aria-label="뒤로">←</button>
+      <nav class="crumbs" id="crumbs" aria-label="위치"><span class="self">홈</span></nav>
+      <span class="save" id="save" aria-live="polite"></span>
+    </header>
+    <main class="main" id="main"><div class="wrap" id="view"></div></main>
+  </div>
+</div>
+
+<script>
+/* replaceChildren() turns null into the text "null": drop empty slots so optional pieces can be passed as null */
+{ const orig = Element.prototype.replaceChildren;
+  Element.prototype.replaceChildren = function(...kids){ return orig.apply(this, kids.filter(k => k != null && k !== false)); }; }
+const SERVER = "Notion";
+const READ = {cache:{staleTime:60000, gcTime:600000}};
+let mcp = null;
+let privPages = [], recentPages = [];
+const hist = [];
+let current = null;
+
+/* ---------- helpers ---------- */
+function h(tag, attrs, ...kids){
+  const el = document.createElement(tag);
+  if (attrs) for (const [k,v] of Object.entries(attrs)){
+    if (v == null || v === false) continue;
+    if (k === "class") el.className = v;
+    else if (k.startsWith("on")) el.addEventListener(k.slice(2), v);
+    else if (k === "text") el.textContent = v;
+    else el.setAttribute(k, v === true ? "" : v);
+  }
+  for (const c of kids.flat()) if (c != null && c !== false) el.append(c.nodeType ? c : document.createTextNode(String(c)));
+  return el;
+}
+const $ = id => document.getElementById(id);
+function store(k, v){ try{ v === undefined ? localStorage.removeItem(k) : localStorage.setItem(k, JSON.stringify(v)); }catch(e){} }
+function load(k){ try{ return JSON.parse(localStorage.getItem(k)); }catch(e){ return null; } }
+function toast(msg){ const t = h("div",{class:"toast",role:"status",text:msg}); document.body.append(t); setTimeout(()=>t.remove(), 2800); }
+function idOf(u){
+  if (!u) return null;
+  const s = String(u).replace(/[{}]/g,"");
+  if (s.startsWith("collection://")) return s;
+  const m = s.replace(/-/g,"").match(/[0-9a-f]{32}/i);
+  return m ? m[0].toLowerCase() : null;
+}
+function iconFor(item){
+  const ic = item.icon;
+  if (typeof ic === "string" && ic && !ic.startsWith("/") && !ic.startsWith("http") && !ic.startsWith("icons/")) return ic;
+  if (ic && ic.emoji) return ic.emoji;
+  return item.type === "database" ? "▦" : "📄";
+}
+function stripLeadingEmoji(title, icon){
+  if (icon && title && title.startsWith(icon)) return title.slice(icon.length).trim();
+  return title;
+}
+const DOW = ["일","월","화","수","목","금","토"];
+function pad(n){ return String(n).padStart(2,"0"); }
+function ymd(d){ return d.getFullYear()+"-"+pad(d.getMonth()+1)+"-"+pad(d.getDate()); }
+function fmtDate(s){
+  if (!s) return "";
+  const dOnly = /^\d{4}-\d{2}-\d{2}$/.test(s);
+  const d = dOnly ? new Date(s+"T00:00:00") : new Date(s);
+  if (isNaN(d)) return s;
+  let out = d.getFullYear()+". "+(d.getMonth()+1)+". "+d.getDate()+". ("+DOW[d.getDay()]+")";
+  if (!dOnly) out += " "+pad(d.getHours())+":"+pad(d.getMinutes());
+  return out;
+}
+function dayKey(s){ if (!s) return null; if (/^\d{4}-\d{2}-\d{2}$/.test(s)) return s; const d = new Date(s); return isNaN(d) ? s.slice(0,10) : ymd(d); }
+
+/* ---------- connector calls ---------- */
+function normPayload(r){
+  let p = r && r.payload !== undefined ? r.payload : r;
+  if (typeof p === "string"){ try{ p = JSON.parse(p); }catch(e){} }
+  return p;
+}
+const QREAD = {cache:{staleTime:600000, gcTime:3600000}};
+async function read(tool, input, fresh, base){
+  if (!mcp) throw {code:"capability_disabled"};
+  base = base || READ;
+  const opts = fresh ? {cache:{...base.cache, refresh:true}} : base;
+  return normPayload(await mcp.callTool(SERVER, tool, input, opts));
+}
+async function write(tool, input){
+  if (!mcp) throw {code:"capability_disabled"};
+  return normPayload(await mcp.callTool(SERVER, tool, input, {cache:false}));
+}
+function errInfo(e){
+  const code = e && e.code;
+  if (/allowance|used up/i.test(String((e && e.message) || "")))
+    return {msg:"Notion의 데이터베이스 조회 한도(1시간 단위)를 다 썼어요. 60분 안에 다시 채워지니 잠시 뒤 ‘새로고침’을 눌러 주세요. 이미 열어 본 표는 그대로 볼 수 있어요.", retry:true};
+  switch(code){
+    case "needs_reauth": return {msg:"Notion 로그인이 만료됐어요. claude.ai 설정 → 커넥터에서 Notion을 다시 연결해 주세요.", retry:false};
+    case "server_not_connected": return {msg:"Notion이 연결되어 있지 않아요. claude.ai 설정 → 커넥터에서 Notion을 추가한 뒤 이 페이지를 새로고침해 주세요.", retry:false};
+    case "selection_required": return {msg:"Notion 연결이 여러 개예요. 화면에 뜬 선택 창에서 사용할 연결을 골라 주세요.", retry:true};
+    case "not_in_manifest": return {msg:"이 앱의 Notion 접근이 꺼져 있어요. 앱 상단의 권한 메뉴에서 Notion을 허용해 주세요.", retry:false};
+    case "approval_required": case "consent_required": return {msg:"Notion 접근을 허용해야 노트를 불러올 수 있어요.", retry:true, label:"Notion 접근 허용하기"};
+    case "blocked_by_policy": return {msg:"조직 정책으로 이 Notion 기능이 막혀 있어요.", retry:false};
+    case "server_unavailable": case "rate_limited": return {msg:"Notion이 잠시 응답하지 않아요. 잠시 뒤 다시 시도해 주세요.", retry:true};
+    case "tool_error": return {msg:"Notion이 요청을 처리하지 못했어요: "+String(e.message||"").slice(0,400), retry:true};
+    case "capability_disabled": case "not_granted": case "capability_removed":
+      return {msg:"이 화면에서는 Notion 연결을 쓸 수 없어요. claude.ai에서 이 앱을 열어 주세요.", retry:false};
+    default: return {msg:"Notion에서 처리하지 못했어요. 다시 시도해 주세요.", retry:true};
+  }
+}
+function errBox(e, onRetry){
+  const info = errInfo(e);
+  const vm = e && e.viewErr ? String(e.viewErr.message || e.viewErr.code || "").slice(0,300) : "";
+  return h("div",{class:"err"}, info.msg,
+    vm ? h("span",{class:"meta"}, "보기 모드 조회도 실패했어요: "+vm) : null,
+    info.retry && onRetry ? h("button",{class:"btn",type:"button",onclick:onRetry}, info.label||"다시 시도") : null);
+}
+function setStatus(state, label){
+  $("dot").className = "dot" + (state==="ok"?" ok":state==="bad"?" bad":"");
+  $("dot").title = label;
+}
+
+/* ---------- sidebar ---------- */
+function sideItem(it){
+  const icon = iconFor(it);
+  const title = stripLeadingEmoji(it.title || "제목 없음", icon);
+  const id = idOf(it.url || it.id);
+  return h("button",{class:"item"+(current && current.id===id?" active":""), type:"button", "data-id":id, onclick:()=>{ open(it.url||it.id, it.type); closeMenu(); }},
+    h("span",{class:"ic","aria-hidden":"true"}, icon),
+    h("span",{class:"t"}, title, it.path ? h("span",{class:"sub"}, it.path) : null));
+}
+function fillList(el, items, empty){
+  el.replaceChildren(...(items.length ? items.map(sideItem) : [h("div",{class:"note"}, empty)]));
+}
+/* tree: children are read from each page's own content the first time a node is expanded,
+   then remembered (memory + browser storage) so reopening costs no Notion calls */
+const pins = load("pins") || [];
+const treeOpen = new Set(load("treeOpen") || []);
+const kidMem = {};
+const KID_TTL = 12*3600*1000;
+let sharedPages = [];
+function parseKids(content){
+  const out = [], seen = new Set();
+  const re = /<(page|database)\b([^>]*)>([\s\S]*?)<\/\1>/g;
+  let m;
+  while ((m = re.exec(content || ""))){
+    const um = /(?:^|\s)url="([^"]*)"/.exec(m[2]);
+    const id = um ? idOf(um[1]) : null;
+    if (!id || seen.has(id)) continue;
+    seen.add(id);
+    let t = m[3].replace(/<[^>]*>/g, "").trim();
+    const am = /(?:^|\s)icon="([^"]*)"/.exec(m[2]);
+    let icon = am && am[1] && !/^(\/|https?:|icons\/)/.test(am[1]) ? am[1] : null;
+    const em = /^\p{Extended_Pictographic}️?/u.exec(t);
+    if (em){ icon = icon || em[0]; t = t.slice(em[0].length).trim(); }
+    /* Notion leaves the title out of untitled-looking blocks (e.g. databases): title "" means "look it up" */
+    out.push({id, url:um[1], type:m[1], title:t, icon});
+  }
+  return out;
+}
+function kidsCached(id){
+  const m = kidMem[id];
+  if (m && Date.now() - m.at < KID_TTL) return m.items;
+  const ls = load("k:"+id);
+  if (ls && Array.isArray(ls.items) && Date.now() - ls.at < KID_TTL){ kidMem[id] = ls; return ls.items; }
+  return null;
+}
+function setKids(id, items){ const v = {at:Date.now(), items}; kidMem[id] = v; store("k:"+id, v); }
+function dropKids(id){
+  delete kidMem[id]; store("k:"+id);
+  document.querySelectorAll('.tnode[data-nid="'+id+'"]').forEach(w => syncNode(w, id));
+}
+function forgetAllKids(){
+  for (const k of Object.keys(kidMem)) delete kidMem[k];
+  try{ Object.keys(localStorage).filter(k => k.startsWith("k:")).forEach(k => localStorage.removeItem(k)); }catch(e){}
+}
+async function loadKids(id, fresh){
+  if (!fresh){ const c = kidsCached(id); if (c) return c; }
+  const p = await read("notion-fetch", {id}, fresh, TREAD);
+  const items = parseKids(between((p && p.text) || "", "content") || "");
+  setKids(id, items);
+  return items;
+}
+function paintKids(wrap, id, items){
+  const kidsEl = wrap.querySelector(":scope>.tkids");
+  if (!items.length){ kidsEl.replaceChildren(h("div",{class:"note"},"하위 페이지 없음")); return; }
+  kidsEl.replaceChildren(...items.map(n => drawNode(n)));
+}
+function syncNode(wrap, id){
+  const tg = wrap.querySelector(":scope>.trow>.tg"), kidsEl = wrap.querySelector(":scope>.tkids");
+  const isOpen = treeOpen.has(id);
+  if (tg && tg.tagName === "BUTTON"){ tg.textContent = isOpen ? "▾" : "▸"; tg.setAttribute("aria-expanded", String(isOpen)); }
+  kidsEl.hidden = !isOpen;
+  if (!isOpen) return;
+  const c = kidsCached(id);
+  if (c){ paintKids(wrap, id, c); return; }
+  kidsEl.replaceChildren(h("div",{class:"skel"}));
+  loadKids(id).then(items => { if (treeOpen.has(id)) paintKids(wrap, id, items); })
+    .catch(e => { kidsEl.replaceChildren(errBox(e, () => syncNode(wrap, id))); });
+}
+function drawNode(node, onRemove){
+  const id = idOf(node.url || node.id);
+  const isDb = node.type === "database";
+  let icon = iconFor(node);
+  let title = stripLeadingEmoji(node.title || "", icon);
+  let lookup = false;
+  if (!title){
+    /* title missing in the parent's content: use the remembered one or fetch it once */
+    const known = relTitle(id);
+    if (known){ const s = splitTitle(known); title = s.title; if (s.icon && !node.icon) icon = s.icon; }
+    else { title = "…"; lookup = true; }
+  }
+  const wrap = h("div",{class:"tnode","data-nid":id});
+  const tg = isDb ? h("span",{class:"tg sp","aria-hidden":"true"})
+    : h("button",{class:"tg",type:"button","aria-label":"하위 페이지 펼치기/접기","aria-expanded":"false",onclick:ev=>{
+        ev.stopPropagation();
+        if (treeOpen.has(id)) treeOpen.delete(id); else treeOpen.add(id);
+        store("treeOpen", [...treeOpen]);
+        syncNode(wrap, id);
+      }}, "▸");
+  const item = h("button",{class:"item"+(current && current.id===id?" active":""),type:"button","data-id":id,title:title,onclick:()=>{ open(node.url||node.id, node.type); closeMenu(); }},
+    h("span",{class:"ic","aria-hidden":"true","data-iid":lookup ? id : null}, icon),
+    h("span",{class:"t","data-tid":lookup ? id : null}, title));
+  wrap.append(h("div",{class:"trow"}, tg, item,
+    typeof onRemove === "function" ? h("button",{class:"tg rm",type:"button",title:"공유 목록에서 빼기(Notion 페이지는 그대로예요)","aria-label":"공유 목록에서 빼기",onclick:ev=>{ ev.stopPropagation(); onRemove(); }},"✕") : null),
+    h("div",{class:"tkids",role:"group",hidden:true}));
+  if (!isDb && treeOpen.has(id)) syncNode(wrap, id);
+  return wrap;
+}
+function drawTree(el, items, empty){
+  el.replaceChildren(...(items.length ? items.map(n => drawNode(n)) : [h("div",{class:"note"}, empty)]));
+}
+function drawPins(){
+  $("secPins").hidden = !pins.length;
+  drawTree($("pinList"), pins, "");
+}
+/* ---------- move to trash (restorable from Notion's Trash) ---------- */
+function askConfirm(msg, yes){
+  return new Promise(res => {
+    const old = document.getElementById("confirm-bar"); if (old) old.remove();
+    const noBlur = ev => ev.preventDefault();
+    const done = v => { bar.remove(); res(v); };
+    const bar = h("div",{class:"confirm",id:"confirm-bar",role:"alertdialog","aria-label":"확인"},
+      h("span",{class:"cm"}, msg),
+      h("button",{class:"btn danger",type:"button",onmousedown:noBlur,onclick:()=>done(true)}, yes),
+      h("button",{class:"btn",type:"button",onmousedown:noBlur,onclick:()=>done(false)}, "취소"));
+    bar.addEventListener("keydown", ev => { if (ev.key === "Escape") done(false); });
+    document.body.append(bar);
+    bar.querySelector(".btn.danger").focus();
+  });
+}
+async function deleteCall(id){
+  const args = {page_ids:[id], user_confirmed:true};
+  try{ return await write("notion-delete-pages", args); }
+  catch(e){
+    /* some viewers wrap tool arguments in {data}; retry once in that shape if Notion says the id list is missing */
+    if (e && e.code === "tool_error" && /page_ids/.test(String(e.message || ""))) return await write("notion-delete-pages", {data: args});
+    throw e;
+  }
+}
+/* returns true when the page was moved to Trash */
+async function trashPage(id, title, isOpenPage){
+  const kids = (kidsCached(id) || []).length;
+  const name = title || "제목 없음";
+  const ok = await askConfirm("‘"+name+"’을(를) 휴지통으로 옮길까요?"+(kids ? " 하위 페이지 "+kids+"개도 함께 옮겨져요." : "")+" Notion 휴지통에서 복원할 수 있어요.", "휴지통으로 옮기기");
+  if (!ok) return false;
+  if (isOpenPage && page && page.id === id){ clearTimeout(saveTimer); page.dirty = false; }   // never save into a page that is going away
+  setSave("saving");
+  try{
+    await deleteCall(id);
+  }catch(e){
+    setSave("error", e, () => trashPage(id, title, isOpenPage));
+    return false;
+  }
+  setSave("");
+  for (const list of [pins, sharedRoots]){ const i = list.findIndex(x => x.id === id); if (i >= 0) list.splice(i, 1); }
+  store("pins", pins); store("sharedRoots", sharedRoots);
+  delete titleCache[id]; delete kidMem[id]; store("k:"+id);
+  for (const m of Object.values(dbMemo)) m.rows = m.rows.filter(r => idOf(r.url) !== id);
+  forgetAllKids();
+  toast("‘"+name+"’을(를) 휴지통으로 옮겼어요. Notion 휴지통에서 복원할 수 있어요.");
+  return true;
+}
+function goAfterTrash(){
+  page = null; editIdx = null; activeTa = null;
+  const prev = hist.pop();
+  $("backBtn").hidden = hist.length === 0;
+  current = null; store("last");
+  if (prev && prev.id) open(prev.id, prev.type, {noPush:true, fresh:true}); else renderHome();
+  loadSidebar(true);
+}
+function pinBtn(id, type, title, icon){
+  const b = h("button",{class:"btn ghost",type:"button"});
+  const paint = () => { const on = pins.some(p => p.id === id); b.textContent = on ? "★ 고정됨" : "☆ 고정"; b.setAttribute("aria-pressed", String(on)); b.title = "왼쪽 목록 맨 위에 고정해요"; };
+  b.addEventListener("click", () => {
+    const i = pins.findIndex(p => p.id === id);
+    if (i >= 0) pins.splice(i, 1);
+    else pins.push({id, url:"https://www.notion.so/"+id, type, title: title || "제목 없음", icon: icon || null});
+    store("pins", pins); paint(); drawPins();
+  });
+  paint();
+  return b;
+}
+/* shared pages: whatever the workspace search can see that is not a private page and not already known as someone's child */
+async function loadShared(fresh){
+  const el = $("sharedList");
+  if (!sharedPages.length) el.replaceChildren(h("div",{class:"skel"}), h("div",{class:"skel"}));
+  let r = null, lastErr = null, viaList = false;
+  /* Notion has a real "Shared" list; fall back to workspace search only when that tool is unavailable */
+  try{ r = await read("notion-list-shared-pages", {limit:200}, fresh, TREAD); viaList = true; }
+  catch(e){ lastErr = e; }
+  if (!r){
+    for (const q of ["", "*"]){
+      try{ r = await read("notion-search", {query:q, page_size:50}, fresh, TREAD); lastErr = null; break; }
+      catch(e){ lastErr = e; if (!(e && e.code === "tool_error")) break; }
+    }
+  }
+  const priv = new Set(privPages.map(x => idOf(x.url || x.id)));
+  const child = new Set();
+  for (const m of Object.values(kidMem)) for (const k of (m.items || [])) child.add(k.id);
+  const seen = new Set(sharedRoots.map(x => x.id));
+  let total = 0, nested = 0;
+  const auto = [];
+  for (const x of ((r && r.results) || [])){
+    if (x.type !== "page" && x.type !== "database") continue;
+    total++;
+    const id = idOf(x.url || x.id);
+    if (!id || priv.has(id) || seen.has(id)) continue;
+    if (!viaList){
+      if (child.has(id)) continue;
+      if (/[\/›>]/.test(String(x.path || ""))){ nested++; continue; }     // nested somewhere: reachable through its parent
+    }
+    seen.add(id); auto.push(x);
+  }
+  sharedPages = [...sharedRoots, ...auto];
+  const rows = sharedPages.map(n => drawNode(n, sharedRoots.some(s => s.id === idOf(n.url || n.id)) ? () => removeSharedRoot(idOf(n.url || n.id)) : null));
+  if (!rows.length){
+    const why = !r ? "공유 페이지 목록을 불러오지 못했어요." : "자동으로 찾은 공유 페이지가 없어요 (검색 "+total+"건, 개인 페이지·하위 페이지로 보여 제외 "+(total - auto.length)+"건"+(nested ? ", 그중 경로 있음 "+nested+"건" : "")+").";
+    el.replaceChildren(h("div",{class:"note"}, why+" ＋ 를 눌러 공유받은 페이지를 이름으로 찾아 추가하세요."),
+      !r && lastErr && lastErr.code !== "tool_error" ? errBox(lastErr, ()=>loadShared(true)) : null);
+    return;
+  }
+  el.replaceChildren(...rows);
+}
+/* shared roots the user registered by hand: kept in this browser, expanded like any other tree */
+const sharedRoots = load("sharedRoots") || [];
+function removeSharedRoot(id){
+  const i = sharedRoots.findIndex(x => x.id === id);
+  if (i >= 0) sharedRoots.splice(i, 1);
+  store("sharedRoots", sharedRoots);
+  loadShared(false);
+}
+$("shareAddBtn").addEventListener("click", () => {
+  const f = $("shareAdd"); f.hidden = !f.hidden;
+  if (!f.hidden) $("shareQ").focus();
+});
+$("shareAdd").addEventListener("submit", async ev => {
+  ev.preventDefault();
+  const q = $("shareQ").value.trim(), list = $("shareFound");
+  if (!q) return;
+  list.replaceChildren(h("div",{class:"skel"}));
+  try{
+    const r = await read("notion-search", {query:q, page_size:20}, false, TREAD);
+    const items = ((r && r.results) || []).filter(x => x.type === "page" || x.type === "database");
+    list.replaceChildren(...(items.length ? items.map(it => {
+      const id = idOf(it.url || it.id), icon = iconFor(it), on = sharedRoots.some(x => x.id === id);
+      return h("button",{class:"item",type:"button",disabled:on,title:it.path||"",onclick:()=>{
+        sharedRoots.push({id, url:it.url || "https://www.notion.so/"+id, type:it.type, title:it.title || "제목 없음", icon: typeof it.icon === "string" ? it.icon : (it.icon && it.icon.emoji) || null});
+        store("sharedRoots", sharedRoots);
+        $("shareAdd").hidden = true; list.replaceChildren(); $("shareQ").value = "";
+        loadShared(false);
+        toast("공유 목록에 ‘"+(it.title||"제목 없음")+"’을(를) 추가했어요");
+      }}, h("span",{class:"ic","aria-hidden":"true"}, icon), h("span",{class:"t"}, stripLeadingEmoji(it.title||"제목 없음", icon), it.path ? h("span",{class:"sub"}, it.path) : null), on ? h("span",{class:"meta"},"추가됨") : null);
+    }) : [h("div",{class:"note"},"‘"+q+"’에 맞는 페이지가 없어요.")]));
+  }catch(e){ list.replaceChildren(errBox(e, ()=>$("shareAdd").requestSubmit())); }
+});
+$("shareRefresh").addEventListener("click", () => { forgetAllKids(); loadSidebar(true); });
+async function loadSidebar(fresh){
+  const priv = $("privList"), rec = $("recentList");
+  drawPins();
+  try{
+    const r = await read("notion-list-private-pages", {limit:100}, fresh);
+    privPages = (r && r.results) || [];
+    drawTree(priv, privPages, "개인 페이지가 없어요.");
+    setStatus("ok", "Notion 연결됨");
+  }catch(e){
+    priv.replaceChildren(errBox(e, ()=>loadSidebar(true)));
+    $("sharedList").replaceChildren();
+    setStatus("bad", "Notion 연결 안 됨");
+    if (current == null) renderHome();
+    return;
+  }
+  try{
+    const r = await read("notion-list-recent-pages", {limit:8}, fresh);
+    recentPages = (r && r.results) || [];
+    fillList(rec, recentPages.slice(0,5), "최근 본 페이지가 없어요.");
+  }catch(e){ rec.replaceChildren(errBox(e, ()=>loadSidebar(true))); }
+  if (current == null) renderHome();
+  loadShared(fresh);
+}
+function markActive(){
+  document.querySelectorAll(".item[data-id]").forEach(b => b.classList.toggle("active", !!current && b.dataset.id === current.id));
+}
+$("searchForm").addEventListener("submit", async ev=>{
+  ev.preventDefault();
+  const q = $("q").value.trim();
+  const sec = $("secSearch"), list = $("searchList");
+  if (!q){ sec.hidden = true; return; }
+  sec.hidden = false;
+  list.replaceChildren(h("div",{class:"skel"}), h("div",{class:"skel"}));
+  try{
+    const r = await read("notion-search", {query:q, page_size:20});
+    const items = ((r && r.results) || []).filter(x => x.type === "page" || x.type === "database");
+    fillList(list, items, "‘"+q+"’에 맞는 노트가 없어요.");
+  }catch(e){ list.replaceChildren(errBox(e, ()=>$("searchForm").requestSubmit())); }
+});
+function closeMenu(){ $("side").classList.remove("open"); $("menuBtn").setAttribute("aria-expanded","false"); }
+$("menuBtn").addEventListener("click", ()=>{
+  const o = $("side").classList.toggle("open");
+  $("menuBtn").setAttribute("aria-expanded", String(o));
+});
+$("newPageBtn").addEventListener("click", ()=>{ closeMenu(); createPage(null); });
+
+/* ---------- navigation ---------- */
+function view(){ return $("view"); }
+function loading(){
+  view().classList.remove("wide");
+  view().replaceChildren(h("div",{class:"skel",style:"height:40px;width:55%;margin:8px 0 16px"}), h("div",{class:"skel",style:"margin:6px 0"}), h("div",{class:"skel",style:"margin:6px 0"}), h("div",{class:"skel",style:"width:80%;margin:6px 0"}));
+}
+function setCrumbs(list, self){
+  const parts = [];
+  list.forEach(c=>{
+    parts.push(h("button",{type:"button",onclick:()=>open(c.url, c.type)}, c.title || (c.type==="database"?"데이터베이스":"페이지")));
+    parts.push(h("span",{class:"sep","aria-hidden":"true"},"/"));
+  });
+  parts.push(h("span",{class:"self"}, self));
+  $("crumbs").replaceChildren(...parts);
+}
+async function open(urlOrId, typeHint, opts){
+  const id = idOf(urlOrId);
+  if (!id) return;
+  await leavePage();
+  if (current && !(opts && opts.noPush) && current.id !== id) hist.push(current);
+  current = {id, type:typeHint};
+  $("backBtn").hidden = hist.length === 0;
+  store("last", current);
+  markActive();
+  loading();
+  $("main").scrollTop = 0;
+  try{
+    const fresh = (opts && opts.fresh) || freshIds.delete(id);
+    const p = await read("notion-fetch", {id}, fresh);
+    if (!current || current.id !== id) return;
+    const type = (p && p.metadata && p.metadata.type) || typeHint;
+    current.type = type;
+    store("last", current);
+    if (type === "database") await renderDatabase(p, id);
+    else {
+      renderPage(p, id);
+      if (opts && opts.focusTitle){ const t = $("pg-title"); t.focus(); const r = document.createRange(); r.selectNodeContents(t); const s = getSelection(); s.removeAllRanges(); s.addRange(r); }
+    }
+  }catch(e){
+    if (!current || current.id !== id) return;
+    view().replaceChildren(h("div",{class:"panel-msg"}, h("h2",{text:"노트를 열지 못했어요"}), errBox(e, ()=>open(id, typeHint, {noPush:true, fresh:true}))));
+  }
+}
+$("backBtn").addEventListener("click", ()=>{
+  const prev = hist.pop();
+  $("backBtn").hidden = hist.length === 0;
+  if (prev) open(prev.id, prev.type, {noPush:true});
+});
+$("homeBtn").addEventListener("click", async ()=>{
+  closeMenu();
+  await leavePage();
+  if (current) hist.push(current);
+  current = null; store("last"); $("backBtn").hidden = hist.length===0; markActive(); renderHome();
+});
+
+/* ---------- home ---------- */
+function renderHome(){
+  setCrumbs([], "홈");
+  view().classList.remove("wide");
+  const tile = it => {
+    const icon = iconFor(it);
+    return h("button",{class:"tile",type:"button",onclick:()=>open(it.url, it.type)},
+      h("span",{class:"ic","aria-hidden":"true"}, icon),
+      h("span",{class:"t"}, stripLeadingEmoji(it.title||"제목 없음", icon)),
+      h("span",{class:"k"}, it.type==="database" ? "데이터베이스" : "페이지"));
+  };
+  const hr = new Date().getHours();
+  const greet = hr < 5 ? "늦은 밤이에요" : hr < 12 ? "좋은 아침이에요" : hr < 18 ? "좋은 오후예요" : "좋은 저녁이에요";
+  const priv = privPages.map(tile);
+  if (mcp) priv.push(h("button",{class:"tile add",type:"button",onclick:()=>createPage(null)}, "＋ 새 페이지"));
+  view().replaceChildren(
+    h("div",{class:"hello"}, h("h1",{text:greet})),
+    recentPages.length ? h("section",null, h("div",{class:"sec-h"}, "최근 방문"), h("div",{class:"tiles"}, recentPages.slice(0,6).map(tile))) : null,
+    privPages.length ? h("section",null, h("div",{class:"sec-h"}, "개인 페이지"), h("div",{class:"tiles"}, priv))
+      : h("div",{class:"panel-msg"}, h("h2",{text:"페이지를 불러오는 중이에요"}), h("p",{text:"Notion 접근을 허용해 달라는 창이 뜨면 허용을 눌러 주세요."}))
+  );
+}
+
+/* ---------- page parsing ---------- */
+function between(text, tag){
+  const m = text.match(new RegExp("<"+tag+"(?:\\s[^>]*)?>([\\s\\S]*?)</"+tag+">"));
+  return m ? m[1] : null;
+}
+function crumbsFrom(text){
+  const ap = between(text, "ancestor-path");
+  if (!ap) return [];
+  const out = [];
+  const re = /<(parent|ancestor-\d+)-(page|database|data-source)\s+url="([^"]*)"(?:\s+(?:title|name)="([^"]*)")?/g;
+  let m;
+  while ((m = re.exec(ap))){
+    if (m[2] === "data-source") continue;
+    out.push({type:m[2], url:m[3], title:m[4] || ""});
+  }
+  return out.reverse();
+}
+function propValue(v){
+  if (v == null || v === "") return null;
+  if (typeof v === "string" && /<|&[a-z]+;|\\/.test(v) && !v.startsWith("[")) v = plainText(v);
+  if (Array.isArray(v)) return v.filter(x=>!String(x).startsWith("user://")).join(", ") || null;
+  const s = String(v);
+  if (s.startsWith("[")){ try{ const a = JSON.parse(s); if (Array.isArray(a)) return a.filter(x=>!String(x).startsWith("user://")).join(", ") || null; }catch(e){} }
+  return s;
+}
+function propsList(obj){
+  const rows = [];
+  const dates = {};
+  for (const [k,v] of Object.entries(obj||{})){
+    const dm = k.match(/^date:(.+):(start|end|is_datetime)$/);
+    if (dm){ (dates[dm[1]] ||= {})[dm[2]] = v; continue; }
+    if (k === "url" || k === "createdTime") continue;
+    const pv = propValue(v);
+    if (pv) rows.push([k, pv]);
+  }
+  for (const [k,d] of Object.entries(dates)){
+    if (d.start) rows.unshift([k, fmtDate(d.start) + (d.end ? " → " + fmtDate(d.end) : "")]);
+  }
+  return rows;
+}
+/* Split Notion-flavored markdown into top-level blocks, keeping each block's exact source
+   so unedited blocks go back to Notion byte-for-byte. */
+function splitBlocks(md){
+  const lines = md.split("\n"), out = [];
+  let i = 0;
+  while (i < lines.length){
+    const line = lines[i];
+    if (line.trim() === ""){ out.push({raw: line, blank: true}); i++; continue; }
+    const buf = [line]; i++;
+    const t = line.trimStart();
+    if (t.startsWith("```")){
+      while (i < lines.length){ const l = lines[i++]; buf.push(l); if (l.trim().startsWith("```")) break; }
+    } else {
+      const tm = /^<([a-z][a-z0-9-]*)\b/i.exec(t);
+      if (tm && !/\/>\s*$/.test(t) && !t.includes("</"+tm[1]+">")){
+        const close = "</"+tm[1]+">";
+        while (i < lines.length){ const l = lines[i++]; buf.push(l); if (l.startsWith(close)) break; }
+      }
+    }
+    while (i < lines.length && /^[ \t]+\S/.test(lines[i])) buf.push(lines[i++]);
+    out.push({raw: buf.join("\n")});
+  }
+  return out;
+}
+
+/* ---------- Notion-flavored markdown → safe DOM ---------- */
+function inline(t){
+  /* Notion's hard line break is a trailing backslash; show it as a break, not as a stray "\" */
+  const hard = /(?:^|[^\\])(?:\\\\)*\\$/.test(t);
+  if (hard) t = t.slice(0, -1);
+  return inlineText(t) + (hard ? "<br>" : "");
+}
+function inlineText(t){
+  return t
+    .replace(/\\</g,"&lt;")
+    .replace(/\\([\\*_`~\[\]()#>|+\-.!$])/g,"$1")
+    .replace(/`([^`]+)`/g,"<code>$1</code>")
+    .replace(/\*\*([^*]+)\*\*/g,"<b>$1</b>")
+    .replace(/(^|[^*])\*([^*\s][^*]*)\*/g,"$1<i>$2</i>")
+    .replace(/~~([^~]+)~~/g,"<s>$1</s>")
+    .replace(/\[([^\]]+)\]\(([^)\s]+)\)/g,'<a href="$2">$1</a>');
+}
+function escHtml(s){ return s.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;"); }
+function mdToHtml(md){
+  const lines = md.split("\n"), out = [], stack = [];
+  let inCode = false;
+  const closeTop = () => { const t = stack.pop(); out.push("</span></li></"+t.type+">"); };
+  const closeAll = () => { while (stack.length) closeTop(); };
+  for (let ln = 0; ln < lines.length; ln++){
+    const line = lines[ln];
+    if (inCode){
+      if (line.trim().startsWith("```")){ out.push("</code></pre>"); inCode = false; }
+      else out.push(escHtml(line)+"\n");
+      continue;
+    }
+    const m = line.match(/^([ \t]*)(.*)$/);
+    const indent = Math.floor(m[1].replace(/\t/g,"  ").length/2);
+    const t = m[2];
+    if (t.startsWith("```")){ closeAll(); out.push("<pre><code>"); inCode = true; continue; }
+    const lm = t.match(/^([-*+]|\d+\.)\s+(.*)$/);
+    if (lm){
+      const type = /\d/.test(lm[1]) ? "ol" : "ul";
+      const cm = lm[2].match(/^\[( |x|X)\]\s*(.*)$/);
+      while (stack.length && stack[stack.length-1].indent > indent) closeTop();
+      const top = stack[stack.length-1];
+      if (top && top.indent === indent){
+        if (top.type !== type){ closeTop(); out.push("<"+type+(cm?' class="todo"':"")+">"); stack.push({type, indent}); }
+        else out.push("</span></li>");
+      } else { out.push("<"+type+(cm?' class="todo"':"")+">"); stack.push({type, indent}); }
+      if (cm) out.push('<li class="chk'+(cm[1]===" "?"":" done")+'" data-ln="'+ln+'"><span class="box"></span><span class="txt">'+inline(cm[2]));
+      else out.push("<li><span>"+inline(lm[2]));
+      continue;
+    }
+    if (t === ""){ continue; }
+    if (stack.length && indent > 0){
+      out.push(t.startsWith("<") ? t : "<div>"+inline(t)+"</div>");
+      continue;
+    }
+    closeAll();
+    let hm;
+    if ((hm = t.match(/^(#{1,4})\s+(.*)$/))){ const n = Math.min(hm[1].length+1, 4); out.push("<h"+n+">"+inline(hm[2])+"</h"+n+">"); }
+    else if (/^(-{3,}|\*{3,})$/.test(t)) out.push("<hr>");
+    else if (t.startsWith("> ")) out.push("<blockquote>"+inline(t.slice(2))+"</blockquote>");
+    else if (t.startsWith("<")) out.push(/^<(b|i|u|s|em|strong|del|code|a|span|mention-[a-z]+)\b/i.test(t) ? "<p>"+inline(t)+"</p>" : t);
+    else out.push("<p>"+inline(t)+"</p>");
+  }
+  if (inCode) out.push("</code></pre>");
+  closeAll();
+  return out.join("\n");
+}
+const KEEP = new Set(["p","ul","ol","li","b","strong","i","em","u","s","del","code","pre","h2","h3","h4","blockquote","br","hr","span","a","table","thead","tbody","tr","td","th","details","summary","div","colgroup","col"]);
+const COLORS = ["gray","brown","orange","yellow","green","blue","purple","pink","red"];
+function colorClass(c){
+  if (!c) return "";
+  const m = c.match(/^([a-z]+?)(_background|_bg)?$/);
+  if (!m || !COLORS.includes(m[1])) return "";
+  return (m[2] ? "bg-" : "c-") + m[1];
+}
+function cleanNode(node){
+  const frag = document.createDocumentFragment();
+  for (const n of Array.from(node.childNodes)){
+    if (n.nodeType === 3){ frag.append(document.createTextNode(n.textContent)); continue; }
+    if (n.nodeType !== 1) continue;
+    const tag = n.tagName.toLowerCase();
+    const url = n.getAttribute("url");
+    if (tag === "page" || tag === "database"){
+      let label = n.textContent.trim();
+      const bid = idOf(url);
+      let lookup = false;
+      const attrIc = n.getAttribute("icon");
+      let ic = attrIc && !/^(\/|https?:|icons\/)/.test(attrIc) ? attrIc : null;
+      if (!label && bid){
+        /* untitled-looking blocks (databases especially): look the title up once and remember it */
+        const known = relTitle(bid);
+        if (known){ const s = splitTitle(known); label = s.title; if (!ic && s.icon) ic = s.icon; }
+        else { label = "…"; lookup = true; }
+      }
+      if (!label) label = tag==="database"?"데이터베이스":"제목 없는 페이지";
+      frag.append(h("button",{class:"block-link",type:"button",onclick:()=>open(url, tag)},
+        h("span",{"aria-hidden":"true","data-iid":lookup ? bid : null}, ic || (tag==="database"?"▦":"📄")),
+        h("span",{"data-tid":lookup ? bid : null}, label)));
+      continue;
+    }
+    if (tag === "mention-page" || tag === "mention-database"){
+      frag.append(h("button",{class:"link-int",type:"button",onclick:()=>open(url, tag==="mention-database"?"database":"page")}, n.textContent.trim() || "페이지"));
+      continue;
+    }
+    if (tag === "mention-date"){ const s = n.getAttribute("start"), e = n.getAttribute("end"); frag.append(h("span",{class:"c-blue"}, fmtDate(s) + (e ? " → "+fmtDate(e) : ""))); continue; }
+    if (tag === "mention-user"){ frag.append(h("span",{class:"c-gray"},"@사용자")); continue; }
+    if (tag === "empty-block"){ frag.append(h("br")); continue; }
+    if (tag === "unknown"){ const alt = n.getAttribute("alt"); frag.append(h("div",{class:"unk"}, alt==="ai_block" ? "(AI 블록: Notion에서만 보여요)" : "(이 앱에서 표시할 수 없는 블록)")); continue; }
+    if (tag === "callout"){ const d = h("div",{class:"callout "+colorClass(n.getAttribute("color"))}); const ic = n.getAttribute("icon"); if (ic && !ic.startsWith("/") && !ic.startsWith("http")) d.append(h("span",{"aria-hidden":"true"}, ic)); d.append(h("div",null, cleanNode(n))); frag.append(d); continue; }
+    if (tag === "columns"){ frag.append(h("div",{class:"cols"}, cleanNode(n))); continue; }
+    if (tag === "column"){ frag.append(h("div",null, cleanNode(n))); continue; }
+    if (tag === "table"){ const tb = document.createElement("table"); tb.append(cleanNode(n)); frag.append(h("div",{class:"tbl"}, tb)); continue; }
+    if (!KEEP.has(tag)){ frag.append(cleanNode(n)); continue; }
+    const el = document.createElement(tag);
+    const cls = [n.getAttribute("class") || ""].filter(c => /^(todo|chk|done|box|txt)( |$)/.test(c)).join(" ");
+    const cc = colorClass(n.getAttribute("color"));
+    if (cls || cc) el.className = (cls+" "+cc).trim();
+    if (tag === "li" && /^\d+$/.test(n.getAttribute("data-ln") || "")) el.dataset.ln = n.getAttribute("data-ln");
+    if (tag === "a"){
+      const href = n.getAttribute("href") || "";
+      const pid = /notion\.(so|com)|^\//.test(href) ? idOf(href) : null;
+      if (pid){ frag.append(h("button",{class:"link-int",type:"button",onclick:()=>open(pid,"page")}, n.textContent)); continue; }
+      if (/^https?:\/\//i.test(href)){ el.href = href; el.target = "_blank"; el.rel = "noopener noreferrer"; }
+    }
+    if ((tag === "td" || tag === "th") && n.getAttribute("colspan")) el.setAttribute("colspan", n.getAttribute("colspan"));
+    el.append(cleanNode(n));
+    frag.append(el);
+  }
+  return frag;
+}
+function renderNotionMarkdown(md){
+  const fixed = md.replace(/<([a-z][a-z0-9-]*)((?:\s[^<>]*?)?)\s*\/>/gi, (all, t, a) => (t.toLowerCase()==="br"||t.toLowerCase()==="hr") ? "<"+t+">" : "<"+t+a+"></"+t+">");
+  const html = mdToHtml(fixed);
+  const parsed = new DOMParser().parseFromString("<div>"+html+"</div>", "text/html");
+  return cleanNode(parsed.body.firstChild || parsed.body);
+}
+
+/* ---------- page editor ---------- */
+let page = null;            // {id, title, titleKey, blocks, editable, saved, dirty, saving, failed, again}
+let editIdx = null, activeTa = null, caretAt = null;
+let saveTimer = null, updSchema;
+const freshIds = new Set();
+
+function lockedRaw(raw){ return /<(page|database|unknown)\b/.test(raw); }
+function snapshot(pg){
+  return pg.blocks
+    .map((b,i) => (pg === page && i === editIdx && activeTa) ? activeTa.value : b.raw)
+    .filter((r,i) => !(pg.blocks[i].isNew && r.trim() === ""))
+    .join("\n");
+}
+async function updateSchema(){
+  if (updSchema !== undefined) return updSchema;
+  try{ const d = mcp.describeTool ? await mcp.describeTool(SERVER, "notion-update-page") : null; updSchema = (d && d.inputSchema) || null; }
+  catch(e){ updSchema = null; }
+  return updSchema;
+}
+/* notion-update-page takes page_id/command at the top level; wrap in {data} only if the schema says so */
+function wrapArgs(s, args){
+  const p = s && s.properties;
+  return (p && p.data && !p.page_id) ? {data: args} : args;
+}
+let updCmds = null;
+async function contentInput(id, md, old){
+  const s = await updateSchema();
+  const p = s && s.properties;
+  const inner = p ? ((p.data && p.data.properties) || p) : null;
+  const cmds = updCmds || (inner && inner.command && inner.command.enum);
+  let args;
+  if (cmds && !cmds.includes("replace_content") && cmds.includes("update_content"))
+    args = {page_id:id, command:"update_content", content_updates:[{old_str: old, new_str: md}]};
+  else args = {page_id:id, command:"replace_content", new_str: md};
+  return wrapArgs(s, args);
+}
+/* learn the allowed commands from Notion's validation message, once */
+function learnCommands(e){
+  const m = /command: Invalid option: expected one of ([^\n]*)/.exec(String((e && e.message) || ""));
+  if (!m) return false;
+  const opts = [...m[1].matchAll(/"([a-z_]+)"/g)].map(x => x[1]);
+  if (!opts.length || (updCmds && updCmds.join() === opts.join())) return false;
+  updCmds = opts;
+  return true;
+}
+async function writeContent(pg, md){
+  try{ return await write("notion-update-page", await contentInput(pg.id, md, pg.saved)); }
+  catch(e){
+    if (e && e.code === "tool_error" && learnCommands(e)) return await write("notion-update-page", await contentInput(pg.id, md, pg.saved));
+    throw e;
+  }
+}
+function setSave(state, e, retry){
+  const el = $("save");
+  el.className = "save";
+  if (state === "pending") el.replaceChildren("편집 중");
+  else if (state === "saving") el.replaceChildren("저장 중…");
+  else if (state === "saved") el.replaceChildren("저장됨");
+  else if (state === "error"){
+    const info = errInfo(e);
+    el.className = "save bad";
+    el.title = info.msg;
+    el.replaceChildren("저장 실패", retry ? h("button",{class:"btn",type:"button",onclick:retry},"다시 저장") : null);
+    toast(info.msg);
+  } else el.replaceChildren();
+}
+function markDirty(delay){
+  if (!page) return;
+  page.dirty = true; page.failed = false;
+  setSave("pending");
+  clearTimeout(saveTimer);
+  saveTimer = setTimeout(saveNow, delay == null ? 1200 : delay);
+}
+async function saveNow(target){
+  const pg = target || page;
+  if (pg === page) clearTimeout(saveTimer);
+  if (!pg || !pg.dirty) return;
+  if (pg.saving){ pg.again = true; return; }
+  const md = snapshot(pg);
+  if (md === pg.saved){ pg.dirty = false; if (page === pg) setSave("saved"); return; }
+  pg.saving = true; pg.dirty = false;
+  setSave("saving");
+  try{
+    await writeContent(pg, md);
+    pg.saved = md; freshIds.add(pg.id);
+    if (page === pg && !pg.dirty) setSave("saved");
+  }catch(e){
+    pg.dirty = true; pg.failed = true;
+    if (page === pg) setSave("error", e, ()=>{ pg.failed = false; saveNow(pg); });
+    else toast("‘"+(pg.title||"제목 없음")+"’ 저장에 실패했어요. Notion에서 확인해 주세요.");
+  }finally{
+    pg.saving = false;
+    if (!pg.failed && (pg.again || pg.dirty)){ pg.again = false; pg.dirty = true; saveNow(pg); }
+  }
+}
+async function leavePage(){
+  if (activeTa) finishEdit();
+  if (page && page.dirty && !page.failed) await saveNow();
+  page = null; editIdx = null; activeTa = null;
+  setSave("");
+}
+addEventListener("pagehide", ()=>{ if (activeTa) finishEdit(); if (page && page.dirty) saveNow(); });
+
+async function saveTitle(t){
+  const pg = page;
+  if (!pg || t === pg.title) return;
+  const prev = pg.title; pg.title = t;
+  setSave("saving");
+  try{
+    const s = await updateSchema();
+    await write("notion-update-page", wrapArgs(s, {page_id: pg.id, command:"update_properties", properties:{[pg.titleKey]: t}}));
+    freshIds.add(pg.id);
+    if (page === pg) setSave("saved");
+    setCrumbsSelf(t || "제목 없음");
+    loadSidebar(true);
+  }catch(e){
+    pg.title = prev;
+    if (page === pg) setSave("error", e, ()=>saveTitle(t));
+  }
+}
+function setCrumbsSelf(t){ const s = $("crumbs").querySelector(".self"); if (s) s.textContent = t; }
+
+function renderPage(p, id){
+  const text = (p && p.text) || "";
+  const icon = p.icon && p.icon.emoji ? p.icon.emoji : null;
+  const rawTitle = p.title || "";
+  const title = stripLeadingEmoji(rawTitle, icon);
+  let props = {};
+  try{ const raw = between(text, "properties"); if (raw) props = JSON.parse(raw); }catch(e){}
+  const titleKey = Object.keys(props).find(k => props[k] === rawTitle || props[k] === title) || "title";
+  const pl = propsList(props).filter(([k]) => k !== titleKey);
+  const content = between(text, "content") || "";
+  /* the page we just read tells us its children: keep the sidebar tree in step without another call */
+  setKids(id, parseKids(content));
+  document.querySelectorAll('.tnode[data-nid="'+id+'"]').forEach(w => { if (treeOpen.has(id)) paintKids(w, id, kidsCached(id)); });
+  const editable = !p.truncated && !/<unknown\b/.test(content);
+  page = {id, title, titleKey, blocks: splitBlocks(content), editable, saved: content, dirty:false, saving:false, failed:false};
+  editIdx = null; activeTa = null;
+  setCrumbs(crumbsFrom(text), title || "제목 없음");
+
+  const t = h("h1",{class:"title", id:"pg-title", contenteditable:"true", spellcheck:"false", "data-ph":"제목 없음", role:"textbox", "aria-label":"페이지 제목"}, title);
+  try{ t.contentEditable = "plaintext-only"; }catch(e){}
+  t.addEventListener("keydown", ev=>{
+    if (ev.isComposing || ev.keyCode === 229) return;
+    if (ev.key === "Enter"){ ev.preventDefault(); t.blur(); if (page && page.editable){ const first = nextIdx(-1); if (first != null) startEdit(first, 0); else appendBlock(); } }
+    if (ev.key === "Escape"){ ev.preventDefault(); t.textContent = page ? page.title : t.textContent; t.blur(); }
+  });
+  t.addEventListener("blur", ()=>{ const v = t.textContent.replace(/\s+/g," ").trim(); if (t.textContent !== v) t.textContent = v; saveTitle(v); });
+
+  view().replaceChildren(
+    icon ? h("div",{class:"pg-icon","aria-hidden":"true"}, icon) : null,
+    t,
+    h("div",{class:"pg-meta"},
+      p.page_last_edited_at ? h("span",null, "마지막 수정 "+fmtDate(p.page_last_edited_at)) : null,
+      h("button",{class:"btn ghost",type:"button",onclick:()=>createPage(id)},"＋ 하위 페이지"),
+      h("button",{class:"btn ghost",type:"button",onclick:()=>open(id,"page",{noPush:true,fresh:true})},"새로고침"),
+      pinBtn(id, "page", title || "제목 없음", icon),
+      h("button",{class:"btn ghost danger",type:"button",title:"이 페이지를 Notion 휴지통으로 옮겨요 (복원할 수 있어요)",onclick:async()=>{
+        if (await trashPage(id, page ? page.title : title, true)) goAfterTrash();
+      }},"🗑 휴지통으로")),
+    pl.length ? h("dl",{class:"props"}, pl.flatMap(([k,v])=>[h("dt",null,k), h("dd",null,v)])) : null,
+    editable ? null : h("div",{class:"lock"},"이 페이지에는 이 앱이 다룰 수 없는 블록(AI 블록 등)이 있어 본문은 읽기만 할 수 있어요. 제목은 고칠 수 있어요."),
+    h("div",{class:"doc",id:"doc",onmousedown:ev=>{ if (activeTa && ev.target.closest("button,a,summary")) ev.preventDefault(); }}),
+    editable ? h("div",{class:"tail",onclick:()=>appendBlock(),"aria-hidden":"true"}) : null
+  );
+  renderDoc();
+}
+
+function visible(i){ const b = page.blocks[i]; return b && (!b.blank || i === editIdx); }
+function canEdit(i){ const b = page.blocks[i]; return page.editable && b && !b.blank && !lockedRaw(b.raw); }
+function prevIdx(i){ for (let k = i-1; k >= 0; k--) if (canEdit(k)) return k; return null; }
+function nextIdx(i){ for (let k = i+1; k < page.blocks.length; k++) if (canEdit(k)) return k; return null; }
+
+function renderDoc(){
+  const doc = $("doc");
+  if (!doc || !page) return;
+  const kids = [];
+  let olCount = 0;
+  page.blocks.forEach((b, i)=>{
+    if (i === editIdx){ kids.push(editorFor(i)); olCount = 0; return; }
+    if (b.blank) return;
+    const box = h("div",{class:"blk"+(canEdit(i)?" can":""),"data-i":i});
+    box.append(renderNotionMarkdown(b.raw));
+    const first = box.firstElementChild;
+    if (first && first.tagName === "OL"){ olCount++; first.start = olCount; } else olCount = 0;
+    if (page.editable) box.append(h("button",{class:"handle",type:"button",title:"아래에 블록 추가","aria-label":"아래에 블록 추가",onclick:ev=>{ ev.stopPropagation(); insertAfter(i, ""); }},"+"));
+    /* mousedown (not click) so the open editor never blurs and re-renders under the pointer */
+    box.addEventListener("mousedown", ev=>{
+      if (ev.button !== 0) return;
+      if (ev.target.closest(".box")){ ev.preventDefault(); return; }
+      if (ev.target.closest("a,button,summary,input,.tbl")) return;
+      if (canEdit(i)){ ev.preventDefault(); startEdit(i, "end"); }
+    });
+    box.addEventListener("click", ev=>{
+      const boxEl = ev.target.closest(".box");
+      if (boxEl && page.editable && !lockedRaw(b.raw)){ const li = boxEl.closest("li[data-ln]"); if (li) toggleTodo(i, +li.dataset.ln); }
+    });
+    if (canEdit(i)){
+      box.tabIndex = 0;
+      box.addEventListener("keydown", ev=>{ if (ev.key === "Enter" && ev.target === box){ ev.preventDefault(); startEdit(i, "end"); } });
+    }
+    kids.push(box);
+  });
+  if (!kids.length) kids.push(page.editable
+    ? h("div",{class:"empty-hint",onclick:()=>appendBlock()},"내용이 없어요. 여기를 눌러 쓰기 시작하세요.")
+    : h("p",{class:"meta"},"내용이 없는 페이지예요."));
+  doc.replaceChildren(...kids);
+  const ta = activeTa;
+  if (ta && ta.isConnected){
+    autosize(ta);
+    ta.focus({preventScroll:true});
+    const pos = ta._caret == null ? ta.value.length : Math.min(ta._caret, ta.value.length);
+    ta.setSelectionRange(pos, pos);
+    ta.scrollIntoView({block:"nearest"});
+  }
+}
+
+function toggleTodo(i, ln){
+  i = leaveEditor(i);
+  editIdx = null;
+  const b = page.blocks[i];
+  const lines = b.raw.split("\n");
+  if (lines[ln] == null) return;
+  lines[ln] = lines[ln].replace(/\[( |x|X)\]/, m => m === "[ ]" ? "[x]" : "[ ]");
+  b.raw = lines.join("\n");
+  renderDoc();
+  markDirty(500);
+}
+
+/* commit text into block i; returns true when the block was removed */
+function commit(i, v){
+  const b = page.blocks[i];
+  if (!b) return false;
+  if (v.trim() === ""){
+    page.blocks.splice(i, 1);
+    if (!b.isNew) markDirty();
+    return true;
+  }
+  const changed = v !== b.raw || b.isNew;
+  b.raw = v; b.blank = false; delete b.isNew;
+  if (changed) markDirty();
+  return false;
+}
+function detach(){ const ta = activeTa; activeTa = null; closeSlash(); return ta ? ta.value : null; }
+function finishEdit(){
+  if (!activeTa || editIdx == null) return;
+  const v = detach();
+  commit(editIdx, v);
+  editIdx = null;
+  renderDoc();
+}
+function cancelEdit(){
+  detach();
+  const b = page.blocks[editIdx];
+  if (b && b.isNew) page.blocks.splice(editIdx, 1);
+  editIdx = null;
+  renderDoc();
+}
+/* leave the current editor (if any) and return target index adjusted for a removed block */
+function leaveEditor(target){
+  if (activeTa && editIdx != null){
+    const cur = editIdx, v = detach();
+    if (commit(cur, v) && target != null && target > cur) target--;
+  }
+  return target;
+}
+function startEdit(i, caret){
+  i = leaveEditor(i);
+  if (i == null || !page.blocks[i]) { editIdx = null; renderDoc(); return; }
+  editIdx = i;
+  caretAt = caret === "end" ? page.blocks[i].raw.length : (caret || 0);
+  renderDoc();
+}
+function insertAfter(i, raw){
+  i = leaveEditor(i);
+  const at = i == null ? page.blocks.length : i + 1;
+  page.blocks.splice(at, 0, {raw, isNew:true});
+  editIdx = at; caretAt = raw.length;
+  renderDoc();
+}
+function appendBlock(){
+  if (!page || !page.editable) return;
+  if (activeTa) leaveEditor(null);
+  page.blocks.push({raw:"", isNew:true});
+  editIdx = page.blocks.length - 1; caretAt = 0;
+  renderDoc();
+}
+function autosize(ta){ ta.style.height = "auto"; ta.style.height = ta.scrollHeight + "px"; }
+
+function editorFor(i){
+  const raw = page.blocks[i].raw;
+  const ta = h("textarea",{class:"blk-edit",id:"blk-edit",rows:"1",spellcheck:"false","aria-label":"블록 편집",placeholder:"글을 쓰거나 ‘/’를 눌러 블록 종류를 고르세요"});
+  ta.value = raw;
+  const box = h("div",{class:"blk editing"+(raw.trimStart().startsWith("```")?" code":"")}, ta);
+  ta.addEventListener("input", ()=>{ autosize(ta); updateSlash(ta); markDirty(1500); });
+  ta.addEventListener("keydown", ev=>onEditKey(ev, ta));
+  ta.addEventListener("blur", ()=>{ if (activeTa === ta) finishEdit(); });
+  activeTa = ta;
+  ta._caret = caretAt; caretAt = null;
+  return box;
+}
+
+const LIST_RE = /^(\s*)(- \[[ xX]\] |[-*+] |(\d+)\. |> )/;
+function onEditKey(ev, ta){
+  if (ev.isComposing || ev.keyCode === 229) return;
+  if (slash.open && slashKey(ev, ta)) return;
+  const v = ta.value, s = ta.selectionStart, e = ta.selectionEnd;
+  const cur = editIdx;
+  if (ev.key === "Escape"){ ev.preventDefault(); ta.blur(); return; }
+  if (ev.key === "Enter" && (ev.metaKey || ev.ctrlKey)){ ev.preventDefault(); ta.blur(); return; }
+  if (ev.key === "Enter" && !ev.shiftKey && !v.includes("\n") && !v.trimStart().startsWith("```") && !v.trimStart().startsWith("<")){
+    ev.preventDefault();
+    const m = LIST_RE.exec(v);
+    if (m && v.slice(m[0].length).trim() === ""){ ta.value = ""; autosize(ta); markDirty(); return; }
+    let prefix = "";
+    if (m){
+      if (m[2].startsWith("- [")) prefix = m[1] + "- [ ] ";
+      else if (m[3]) prefix = m[1] + (Number(m[3]) + 1) + ". ";
+      else if (m[2] !== "> ") prefix = m[1] + m[2];
+    }
+    const before = v.slice(0, s), after = v.slice(e);
+    detach();
+    const removed = commit(cur, before);
+    const at = removed ? cur : cur + 1;
+    page.blocks.splice(at, 0, {raw: prefix + after, isNew: true});
+    if (after.trim()) markDirty();
+    editIdx = at; caretAt = prefix.length;
+    renderDoc();
+    return;
+  }
+  if (ev.key === "Backspace" && s === 0 && e === 0){
+    const pm = /^(#{1,3} |- \[[ xX]\] |[-*+] |\d+\. |> )/.exec(v);
+    if (pm){ ev.preventDefault(); ta.value = v.slice(pm[0].length); ta.setSelectionRange(0,0); autosize(ta); markDirty(); return; }
+    const p = prevIdx(cur);
+    if (v === ""){
+      ev.preventDefault(); detach(); commit(cur, "");
+      if (p != null){ editIdx = p; caretAt = page.blocks[p].raw.length; } else editIdx = null;
+      renderDoc(); return;
+    }
+    if (p != null && p === cur - 1 && !page.blocks[p].raw.includes("\n") && !v.includes("\n") && !page.blocks[p].raw.trimStart().startsWith("<")){
+      ev.preventDefault(); detach();
+      const pos = page.blocks[p].raw.length;
+      page.blocks[p].raw += v;
+      page.blocks.splice(cur, 1);
+      markDirty();
+      editIdx = p; caretAt = pos;
+      renderDoc(); return;
+    }
+    return;
+  }
+  if (ev.key === "ArrowUp" && !ev.shiftKey && !v.slice(0, s).includes("\n")){
+    const p = prevIdx(cur); if (p == null) return;
+    ev.preventDefault(); startEdit(p, "end"); return;
+  }
+  if (ev.key === "ArrowDown" && !ev.shiftKey && !v.slice(e).includes("\n")){
+    const n = nextIdx(cur); if (n == null) return;
+    ev.preventDefault(); startEdit(n, 0); return;
+  }
+}
+
+/* ---------- slash menu ---------- */
+const SLASH = [
+  {k:"텍스트 text 문단", label:"텍스트", sym:"Aa", pre:""},
+  {k:"제목1 heading h1", label:"제목 1", sym:"H1", pre:"# "},
+  {k:"제목2 heading h2", label:"제목 2", sym:"H2", pre:"## "},
+  {k:"제목3 heading h3", label:"제목 3", sym:"H3", pre:"### "},
+  {k:"할일 할 일 todo 체크", label:"할 일 목록", sym:"☐", pre:"- [ ] "},
+  {k:"글머리 bullet 목록", label:"글머리 기호 목록", sym:"•", pre:"- "},
+  {k:"번호 number 목록", label:"번호 매기기 목록", sym:"1.", pre:"1. "},
+  {k:"인용 quote", label:"인용", sym:"❝", pre:"> "},
+  {k:"코드 code", label:"코드", sym:"</>", pre:"```\n", post:"\n```"},
+  {k:"구분선 divider hr", label:"구분선", sym:"—", pre:"---", line:true}
+];
+const slash = {open:false, items:[], sel:0, el:null};
+function closeSlash(){ if (slash.el) slash.el.remove(); slash.open = false; slash.el = null; }
+function updateSlash(ta){
+  const m = /^\/([^\s\/]*)$/.exec(ta.value);
+  if (!m){ closeSlash(); return; }
+  const q = m[1].toLowerCase();
+  const items = SLASH.filter(x => !q || x.k.toLowerCase().includes(q) || x.label.includes(q));
+  if (!items.length){ closeSlash(); return; }
+  slash.items = items; slash.sel = Math.min(slash.sel, items.length - 1); slash.open = true;
+  drawSlash(ta);
+}
+function drawSlash(ta){
+  const el = h("div",{class:"slash",role:"listbox","aria-label":"블록 종류"},
+    h("div",{class:"cap"},"블록 종류"),
+    slash.items.map((it, k)=>h("div",{class:"opt",role:"option","aria-selected":String(k===slash.sel),
+      onmousedown:ev=>ev.preventDefault(), onclick:()=>applySlash(it, ta)},
+      h("span",{class:"sym","aria-hidden":"true"}, it.sym), it.label)));
+  if (slash.el) slash.el.replaceWith(el); else ta.parentNode.append(el);
+  slash.el = el;
+}
+function slashKey(ev, ta){
+  if (ev.key === "ArrowDown"){ ev.preventDefault(); slash.sel = (slash.sel + 1) % slash.items.length; drawSlash(ta); return true; }
+  if (ev.key === "ArrowUp"){ ev.preventDefault(); slash.sel = (slash.sel - 1 + slash.items.length) % slash.items.length; drawSlash(ta); return true; }
+  if (ev.key === "Enter" || ev.key === "Tab"){ ev.preventDefault(); applySlash(slash.items[slash.sel], ta); return true; }
+  if (ev.key === "Escape"){ ev.preventDefault(); closeSlash(); return true; }
+  return false;
+}
+function applySlash(it, ta){
+  closeSlash();
+  if (it.line){
+    const cur = editIdx;
+    detach();
+    commit(cur, it.pre);
+    page.blocks.splice(cur + 1, 0, {raw:"", isNew:true});
+    editIdx = cur + 1; caretAt = 0;
+    renderDoc();
+    return;
+  }
+  ta.value = it.pre + (it.post || "");
+  ta.parentNode.classList.toggle("code", it.pre.startsWith("```"));
+  ta.setSelectionRange(it.pre.length, it.pre.length);
+  autosize(ta);
+  markDirty();
+}
+
+/* ---------- create pages ---------- */
+function createdId(r, exclude){
+  const cand = [];
+  const arr = (r && (r.pages || r.results)) || [];
+  if (Array.isArray(arr)) for (const x of arr) cand.push(idOf(x && (x.url || x.id)));
+  const s = typeof r === "string" ? r : JSON.stringify(r || "");
+  for (const m of s.matchAll(/[0-9a-f]{8}-?[0-9a-f]{4}-?[0-9a-f]{4}-?[0-9a-f]{4}-?[0-9a-f]{12}/gi)) cand.push(idOf(m[0]));
+  return cand.find(x => x && x !== exclude) || null;
+}
+async function createPage(parentId){
+  if (!mcp){ toast("Notion에 연결된 뒤에 만들 수 있어요."); return; }
+  await leavePage();
+  const input = {pages:[{properties:{title:"새 페이지"}}]};
+  if (parentId) input.parent = {type:"page_id", page_id: parentId};
+  setSave("saving");
+  try{
+    const r = await write("notion-create-pages", input);
+    setSave("");
+    const nid = createdId(r, parentId);
+    if (parentId){ freshIds.add(parentId); dropKids(parentId); }
+    loadSidebar(true);
+    if (nid) open(nid, "page", {fresh:true, focusTitle:true});
+    else toast("새 페이지를 만들었어요. 왼쪽 목록에서 열어 주세요.");
+  }catch(e){ setSave("error", e, ()=>createPage(parentId)); }
+}
+
+/* ---------- database rendering ---------- */
+const dbState = {}, dbMemo = {};
+let qdsSchema;
+/* build a view-mode query; argument names come from the tool's own schema when the viewer exposes it */
+async function viewInput(viewUrl, cursor){
+  if (qdsSchema === undefined){
+    try{ const d = mcp.describeTool ? await mcp.describeTool(SERVER, "notion-query-data-sources") : null; qdsSchema = (d && d.inputSchema) || null; }
+    catch(e){ qdsSchema = null; }
+  }
+  const p = qdsSchema && qdsSchema.properties;
+  const wrapped = !p || !!p.data;
+  const inner = p ? ((p.data && p.data.properties) || p) : null;
+  let key = "view_url";
+  if (inner && !inner.view_url){ const k = Object.keys(inner).find(k => /view/i.test(k)); if (k) key = k; }
+  const args = {mode:"view", [key]: viewUrl};
+  if (cursor) args.start_cursor = cursor;
+  return wrapped ? {data: args} : args;
+}
+function parseDb(p){
+  const text = (p && p.text) || "";
+  const vm = text.match(/view:\/\/[^"'\s<>{}]+/);
+  const sources = [];
+  const re = /<data-source url="\{?\{?(collection:\/\/[^"}]+)\}?\}?">/g;
+  let m;
+  while ((m = re.exec(text))) if (!sources.includes(m[1])) sources.push(m[1]);
+  let schema = {};
+  const sm = text.match(/<data-source-state>\s*([\s\S]*?)\s*<\/data-source-state>/);
+  if (sm){ try{ schema = JSON.parse(sm[1]).schema || {}; }catch(e){} }
+  const props = Object.values(schema);
+  /* every saved view of the database: its filters and sorts live in Notion, we only read rows through it */
+  const views = [];
+  const vre = /<view url="\{?\{?(view:\/\/[^"}]+)\}?\}?">\s*([\s\S]*?)\s*<\/view>/g;
+  let vmm;
+  while ((vmm = vre.exec(text))){
+    let meta = {};
+    try{ meta = JSON.parse(vmm[2]); }catch(e){}
+    if (!views.some(v => v.url === vmm[1])) views.push({url: vmm[1], name: meta.name || "보기 "+(views.length+1), type: meta.type || "", props: Array.isArray(meta.displayProperties) ? meta.displayProperties : null,
+      calendarBy: meta.calendarBy || null,
+      filtered: !!((Array.isArray(meta.simpleFilters) && meta.simpleFilters.length) || meta.filter || meta.filters)});
+  }
+  return {
+    sources, schema, view: vm ? vm[0] : null, views,
+    titleProp: (props.find(x=>x.type==="title")||{}).name,
+    dateProp: (props.find(x=>x.type==="date")||{}).name,
+    selectProp: props.find(x=>x.type==="select"),
+    textProps: props.filter(x=>x.type==="text").map(x=>x.name).slice(0,3),
+    crumbs: crumbsFrom(text)
+  };
+}
+async function renderDatabase(p, id){
+  const info = parseDb(p);
+  const title = p.title || "데이터베이스";
+  const saved = load("db:"+id) || {};
+  const st = dbState[id] ||= {mode: saved.mode || "table", sort: saved.sort || null, sortSet: !!saved.sortSet, widths: saved.widths || {}, wrap: !!saved.wrap, view: saved.view || null, filters: saved.filters || [], cols: saved.cols || {}, filterOpen: false, limit: ROW_STEP, q: "", month: null, sel: null, adding: false};
+  if (st.mode === "cal" && !info.dateProp) st.mode = "table";
+  if (st.view && info.views.some(v => v.url === st.view)) info.view = st.view; else st.view = null;
+  const defaultSort = () => {                 // calendar views come back in no useful order: newest date first until the user picks a sort
+    const cv = info.views.find(v => v.url === info.view);
+    if (!st.sortSet && !st.sort && cv && cv.calendarBy) st.sort = {prop: cv.calendarBy, dir: "desc"};
+  };
+  defaultSort();
+  if (!st.month){ const n = new Date(); st.month = new Date(n.getFullYear(), n.getMonth(), 1); }
+  const body = h("div",{class:"dbbody"});
+  const toolbar = h("div",{class:"toolbar"});
+  const panelHost = h("div",{class:"io-host"});
+  const filterHost = h("div",{class:"flt-host"});
+  setCrumbs(info.crumbs, title);
+  view().classList.add("wide");
+  view().replaceChildren(h("h1",{class:"title"}, title), h("div",{class:"pg-meta"}, pinBtn(id, "database", title)), toolbar, filterHost, panelHost, body);
+  if (!info.sources.length){ body.append(h("div",{class:"panel-msg"}, h("p",{text:"이 데이터베이스의 내용을 읽을 수 없어요."}))); return; }
+  body.append(h("div",{class:"skel"}), h("div",{class:"skel"}));
+  const memo = dbMemo[id] && dbMemo[id].view === info.view ? dbMemo[id] : null;
+  let rows = memo ? memo.rows : [], hasMore = memo ? memo.hasMore : false, nextCursor = memo ? memo.next : null;
+  /* rows-mode queries count against Notion's hourly allowance; view mode does not,
+     so try the database's own view first and keep rows in memory between visits */
+  async function fetchRows(fresh){
+    if (!fresh && memo) return;
+    let r = null, viewErr = null;
+    if (info.view){
+      try{ r = await read("notion-query-data-sources", await viewInput(info.view), fresh, QREAD); }
+      catch(e){ viewErr = e; }
+    }
+    if (!r || !Array.isArray(r.results || r.rows)){
+      const input = {data:{mode:"rows", data_source_url: info.sources[0], limit:100}};
+      if (info.dateProp) input.data.sort = [{property: info.dateProp, direction:"descending"}];
+      try{ r = await read("notion-query-data-sources", input, fresh, QREAD); }
+      catch(e){ if (viewErr) e.viewErr = viewErr; throw e; }
+    }
+    rows = (r && (r.results || r.rows)) || [];
+    hasMore = !!(r && r.has_more);
+    nextCursor = (r && r.next_cursor) || null;
+    dbMemo[id] = {rows, hasMore, next: nextCursor, view: info.view};
+  }
+  /* export needs every row: page through the view (view mode has no hourly allowance), up to ~1,000 rows */
+  async function loadAll(){
+    let n = 0;
+    while (hasMore && nextCursor && info.view && n < 9){
+      const r = await read("notion-query-data-sources", await viewInput(info.view, nextCursor), true, QREAD);
+      rows.push(...((r && (r.results || r.rows)) || []));
+      hasMore = !!(r && r.has_more); nextCursor = (r && r.next_cursor) || null; n++;
+    }
+    dbMemo[id] = {rows, hasMore, next: nextCursor, view: info.view};
+    return {complete: !hasMore, count: rows.length};
+  }
+  const persist = () => store("db:"+id, {mode: st.mode, sort: st.sort, sortSet: st.sortSet, widths: st.widths, wrap: st.wrap, view: st.view, filters: st.filters, cols: st.cols});
+  const ctx = {info, st, id, persist, focus: null, openAfter: false, addAgain: false, finishActive: null,
+    get rows(){ return rows; },
+    panelHost, filterHost, loadAll,
+    get hasMore(){ return hasMore; },
+    redraw: () => drawBody(),
+    redrawAll: () => { drawToolbar(); drawBody(); },
+    refetch: async () => { forgetTitles(rows); await fetchRows(true); drawToolbar(); drawBody(); }};
+  function setMode(m){ st.mode = m; persist(); drawToolbar(); drawBody(); drawFilters(ctx); }
+  function countLabel(){
+    if (st.mode !== "table") return rows.length+"행"+(hasMore ? " · 일부만" : "");
+    const n = shownRows(ctx).length;
+    const cv = info.views.find(v => v.url === info.view);
+    return (n !== rows.length ? n+" / " : "")+rows.length+"행"+(hasMore ? " · 일부만 불러왔어요" : "")+(cv && cv.filtered ? " · 보기 필터 적용 중" : "");
+  }
+  async function loadEverything(){
+    body.replaceChildren(h("div",{class:"skel"}), h("div",{class:"skel"}));
+    try{ await loadAll(); }catch(e){ toast(errInfo(e).msg); }
+    drawToolbar(); drawBody(); drawFilters(ctx);
+  }
+  /* the database's own saved views (with the filters and sorts set in Notion) */
+  async function switchView(url){
+    st.view = url; info.view = url;
+    defaultSort();
+    delete dbMemo[id]; st.limit = ROW_STEP; persist();
+    body.replaceChildren(h("div",{class:"skel"}), h("div",{class:"skel"}));
+    try{ await fetchRows(true); drawToolbar(); drawBody(); drawFilters(ctx); }catch(e){ body.replaceChildren(errBox(e, () => switchView(url))); }
+  }
+  ctx.switchView = switchView;
+  function viewSelect(){
+    const sel = h("select",{id:"db-view","aria-label":"데이터베이스 보기",title:"Notion에 저장된 보기를 골라요. 보기마다 걸린 필터와 정렬이 달라요.",onchange:()=>switchView(sel.value)},
+      info.views.map(v => h("option",{value:v.url}, v.name+(v.type && v.type !== "table" ? " ("+v.type+")" : "")+(v.filtered ? " · 필터 있음" : ""))));
+    sel.value = info.view;
+    return h("span",{class:"sortctl"}, h("span",{class:"meta","aria-hidden":"true"},"보기"), sel);
+  }
+  function drawToolbar(){
+    toolbar.replaceChildren(
+      h("div",{class:"seg",role:"group","aria-label":"보기 방식"},
+        h("button",{type:"button","aria-pressed":String(st.mode==="table"),onclick:()=>setMode("table")},"표"),
+        info.dateProp ? h("button",{type:"button","aria-pressed":String(st.mode==="cal"),onclick:()=>setMode("cal")},"달력") : null),
+      st.mode === "table" ? h("input",{class:"db-q",id:"db-q",type:"search",placeholder:"이 표에서 찾기","aria-label":"이 표에서 찾기",value:st.q,oninput:ev=>{ st.q = ev.target.value; drawBody(); }}) : null,
+      info.views.length > 1 ? viewSelect() : null,
+      h("span",{class:"meta"}, countLabel()),
+      hasMore && st.mode === "table" ? h("button",{class:"btn ghost",type:"button",title:"남은 행을 모두 불러와요",onclick:loadEverything},"모두 불러오기") : null,
+      h("span",{style:"flex:1"}),
+      st.mode === "table" ? colsButton(ctx) : null,
+      st.mode === "table" ? filterButton(ctx) : null,
+      st.mode === "table" ? sortControl(ctx) : null,
+      st.mode === "table" ? h("button",{class:"btn ghost",type:"button","aria-pressed":String(st.wrap),title:"긴 내용을 셀 안에서 줄바꿈해 모두 보여 줘요",onclick:()=>{ st.wrap = !st.wrap; persist(); ctx.redrawAll(); }}, st.wrap ? "↵ 줄바꿈 끄기" : "↵ 줄바꿈 켜기") : null,
+      st.mode === "table" ? h("button",{class:"btn ghost",type:"button",title:"표를 Excel·CSV 파일로 저장해요",onclick:()=>openExport(ctx)},"⬇ 내보내기") : null,
+      st.mode === "table" && info.titleProp ? h("button",{class:"btn ghost",type:"button",title:"Excel·CSV 파일의 행을 이 표에 추가해요",onclick:()=>openImport(ctx)},"⬆ 가져오기") : null,
+      h("button",{class:"btn ghost",type:"button",onclick:async()=>{ body.replaceChildren(h("div",{class:"skel"})); try{ await ctx.refetch(); }catch(e){ body.replaceChildren(errBox(e,()=>drawBody())); } }},"새로고침"),
+      st.mode === "cal" && info.titleProp ? h("button",{class:"btn primary",type:"button",onclick:()=>{ st.adding = !st.adding; ctx.redrawAll(); }}, st.adding?"추가 닫기":"새로 만들기") : null
+    );
+  }
+  function drawBody(){
+    ctx.finishActive = null;
+    if (st.mode === "cal"){
+      const parts = [];
+      if (st.adding) parts.push(addForm(info, st, async()=>{ st.adding = false; await ctx.refetch(); }));
+      parts.push(...calendar(info, st, rows, drawBody));
+      body.replaceChildren(...parts);
+      return;
+    }
+    body.replaceChildren(renderTable(ctx));
+    if (ctx.focus){
+      const t = body.querySelector('td[data-r="'+ctx.focus.r+'"][data-c="'+ctx.focus.c+'"]');
+      ctx.focus = null;
+      if (t){ t.focus(); if (ctx.openAfter) t.click(); }
+    }
+    ctx.openAfter = false;
+    if (ctx.addAgain){ ctx.addAgain = false; const b = body.querySelector(".add-row"); if (b) b.click(); }
+  }
+  try{ await fetchRows(false); if (current && current.id === id){ drawToolbar(); drawBody(); drawFilters(ctx); } }
+  catch(e){ body.replaceChildren(errBox(e, ()=>renderDatabase(p, id))); }
+}
+
+/* ---------- column order and visibility: start from the Notion view, then remember local changes per view ---------- */
+function orderedCols(ctx){
+  const base = dbCols(ctx.info);
+  const byName = new Map(base.map(c => [c.name, c]));
+  const key = ctx.info.view || "_";
+  const view = ctx.info.views.find(v => v.url === ctx.info.view);
+  const ov = ctx.st.cols[key];
+  let order, hidden;
+  if (ov){
+    order = (ov.order || []).filter(n => byName.has(n));
+    for (const c of base) if (!order.includes(c.name)) order.push(c.name);
+    hidden = new Set(ov.hidden || []);
+  } else if (view && view.props){
+    const vis = view.props.filter(n => byName.has(n));
+    /* a calendar view lays rows out by its date property but does not list it as a column: show it anyway */
+    if (view.calendarBy && byName.has(view.calendarBy) && !vis.includes(view.calendarBy)) vis.unshift(view.calendarBy);
+    order = [...vis, ...base.map(c => c.name).filter(n => !vis.includes(n))];
+    hidden = new Set(order.filter(n => !vis.includes(n)));
+  } else {
+    order = base.map(c => c.name); hidden = new Set();
+  }
+  const titles = base.filter(c => c.type === "title").map(c => c.name);        // title is never hidden; it starts first (as in Notion) but can be moved
+  if (!ov) order = [...titles, ...order.filter(n => !titles.includes(n))];
+  titles.forEach(n => hidden.delete(n));
+  const all = order.map(n => byName.get(n));
+  return {all, visible: all.filter(c => !hidden.has(c.name)), hidden, custom: !!ov};
+}
+function visibleCols(ctx){ return orderedCols(ctx).visible; }
+function saveCols(ctx, names, hidden){
+  ctx.st.cols[ctx.info.view || "_"] = {order: names, hidden: [...hidden]};
+  ctx.persist();
+}
+function moveCol(ctx, from, beforeName){
+  const o = orderedCols(ctx);
+  const names = o.all.map(c => c.name).filter(n => n !== from);
+  const at = names.indexOf(beforeName);
+  if (at < 0) return;
+  names.splice(at, 0, from);
+  saveCols(ctx, names, o.hidden);
+  ctx.redrawAll();
+}
+function colsButton(ctx){
+  return h("button",{class:"btn ghost",type:"button",title:"열 순서와 표시를 바꿔요 (머리글을 끌어서 옮길 수도 있어요)",onclick:()=>openCols(ctx)},"▥ 열");
+}
+function openCols(ctx, focusId){
+  const o = orderedCols(ctx);
+  const names = o.all.map(c => c.name);
+  const swap = (i, d) => {
+    const j = i + d;
+    if (j < 0 || j >= names.length) return;
+    [names[i], names[j]] = [names[j], names[i]];
+    saveCols(ctx, names, o.hidden); ctx.redrawAll();
+    openCols(ctx, (d < 0 ? "col-up-" : "col-dn-") + j);
+  };
+  const rows = o.all.map((c, i) => {
+    const isTitle = c.type === "title";
+    return h("div",{class:"col-row"},
+      h("label",{class:"col-name",for:"col-v-"+i},
+        h("input",{type:"checkbox",id:"col-v-"+i,checked:!o.hidden.has(c.name),disabled:isTitle,onchange:ev=>{
+          const hid = new Set(o.hidden); ev.target.checked ? hid.delete(c.name) : hid.add(c.name);
+          saveCols(ctx, names, hid); ctx.redrawAll(); openCols(ctx, "col-v-"+i);
+        }}), h("span",{class:"tsym","aria-hidden":"true"}, DB_SYM[c.type] || "·"), h("span",null,c.name)),
+      h("button",{class:"btn ghost",type:"button",id:"col-up-"+i,disabled:i <= 0,"aria-label":c.name+" 위로 옮기기",onclick:()=>swap(i, -1)},"↑"),
+      h("button",{class:"btn ghost",type:"button",id:"col-dn-"+i,disabled:i >= names.length - 1,"aria-label":c.name+" 아래로 옮기기",onclick:()=>swap(i, 1)},"↓"));
+  });
+  ioPanel(ctx, "열 순서·표시",
+    h("p",{class:"meta"},"처음에는 Notion 보기에 저장된 순서와 숨김을 따라요(제목 열은 맨 앞). 제목 열도 다른 자리로 옮길 수 있어요. 여기서 바꾼 내용은 Notion에는 저장되지 않고 이 브라우저에만 기억돼요. 열 머리글을 끌어서도 옮길 수 있어요."),
+    h("div",{class:"col-list"}, rows),
+    h("div",{class:"io-acts"},
+      o.custom ? h("button",{class:"btn",type:"button",onclick:()=>{ delete ctx.st.cols[ctx.info.view || "_"]; ctx.persist(); ctx.redrawAll(); openCols(ctx); }},"Notion 순서로 되돌리기") : h("span",{class:"meta"},"지금은 Notion 보기 순서 그대로예요.")));
+  if (focusId){ const el = document.getElementById(focusId); if (el && !el.disabled) el.focus(); }
+}
+
+/* ---------- filters: applied in the app on the rows loaded from the chosen Notion view ---------- */
+const OPS = {
+  text:[["contains","포함"],["not_contains","포함하지 않음"],["is","같음"],["empty","비어 있음"],["not_empty","비어 있지 않음"]],
+  number:[["eq","="],["gt",">"],["gte","≥"],["lt","<"],["lte","≤"],["empty","비어 있음"],["not_empty","비어 있지 않음"]],
+  select:[["is","같음"],["is_not","같지 않음"],["empty","비어 있음"],["not_empty","비어 있지 않음"]],
+  multi:[["contains","포함"],["not_contains","포함하지 않음"],["empty","비어 있음"],["not_empty","비어 있지 않음"]],
+  date:[["on","같은 날"],["before","이전"],["after","이후"],["on_or_before","이전(당일 포함)"],["on_or_after","이후(당일 포함)"],["empty","비어 있음"],["not_empty","비어 있지 않음"]],
+  checkbox:[["checked","체크됨"],["unchecked","체크 안 됨"]],
+  relation:[["contains","포함"],["not_contains","포함하지 않음"],["empty","비어 있음"],["not_empty","비어 있지 않음"]]
+};
+function filterKind(c){
+  return ({number:"number", select:"select", status:"select", multi_select:"multi", date:"date", checkbox:"checkbox", relation:"relation"})[c.type] || "text";
+}
+const NO_VALUE_OPS = new Set(["empty","not_empty","checked","unchecked"]);
+function relTitles(r, c){ return listOf(r[c.name]).map(u => { const i = idOf(u), t = i && titleCache[i]; return t ? splitTitle(t).title : u; }); }
+function rowMatches(c, r, f){
+  const kind = filterKind(c), op = f.op;
+  if (kind === "checkbox") return op === "checked" ? isYes(r[c.name]) : !isYes(r[c.name]);
+  const val = String(f.val == null ? "" : f.val).trim();
+  if (!NO_VALUE_OPS.has(op) && val === "") return true;            // an unfinished condition filters nothing
+  const low = val.toLowerCase();
+  switch (kind){
+    case "select": { const cur = r[c.name] == null ? "" : String(r[c.name]); return op === "empty" ? cur === "" : op === "not_empty" ? cur !== "" : op === "is" ? cur === val : cur !== val; }
+    case "multi": { const a = listOf(r[c.name]); return op === "empty" ? !a.length : op === "not_empty" ? a.length > 0 : op === "contains" ? a.includes(val) : !a.includes(val); }
+    case "relation": { const a = relTitles(r, c); const hit = a.some(t => t.toLowerCase().includes(low)); return op === "empty" ? !a.length : op === "not_empty" ? a.length > 0 : op === "contains" ? hit : !hit; }
+    case "number": {
+      const raw = r[c.name], has = raw != null && raw !== "" && !isNaN(Number(raw)), n = Number(raw), t = Number(val);
+      if (op === "empty") return !has; if (op === "not_empty") return has;
+      if (!has || isNaN(t)) return false;
+      return op === "eq" ? n === t : op === "gt" ? n > t : op === "gte" ? n >= t : op === "lt" ? n < t : n <= t;
+    }
+    case "date": {
+      const s = String(r["date:"+c.name+":start"] || "").slice(0, 10);
+      if (op === "empty") return !s; if (op === "not_empty") return !!s;
+      if (!s) return false;
+      return op === "on" ? s === val : op === "before" ? s < val : op === "after" ? s > val : op === "on_or_before" ? s <= val : s >= val;
+    }
+    default: {
+      const t = cellText(c, r), tl = t.toLowerCase();
+      return op === "empty" ? t === "" : op === "not_empty" ? t !== "" : op === "contains" ? tl.includes(low) : op === "not_contains" ? !tl.includes(low) : tl === low;
+    }
+  }
+}
+function applyFilters(ctx, list){
+  const fs = (ctx.st.filters || []);
+  if (!fs.length) return list;
+  const cols = dbCols(ctx.info);
+  return list.filter(r => fs.every(f => { const c = cols.find(x => x.name === f.prop); return !c || rowMatches(c, r, f); }));
+}
+function activeFilterCount(ctx){ return (ctx.st.filters || []).filter(f => NO_VALUE_OPS.has(f.op) || String(f.val == null ? "" : f.val).trim() !== "").length; }
+function filterButton(ctx){
+  const n = activeFilterCount(ctx);
+  return h("button",{class:"btn ghost","aria-pressed":String(!!ctx.st.filterOpen),title:"이 표에서 조건에 맞는 행만 보고, 내보내기에도 그대로 반영해요",onclick:()=>{
+    ctx.st.filterOpen = !ctx.st.filterOpen;
+    if (ctx.st.filterOpen && !ctx.st.filters.length) addFilter(ctx, true);
+    drawFilters(ctx);
+  }}, "▽ 필터"+(n ? " "+n : ""));
+}
+function addFilter(ctx, quiet){
+  const c = dbCols(ctx.info)[0];
+  if (!c) return;
+  ctx.st.filters.push({prop: c.name, op: OPS[filterKind(c)][0][0], val: ""});
+  ctx.persist();
+  if (!quiet) drawFilters(ctx);
+}
+function drawFilters(ctx){
+  const {st} = ctx, host = ctx.filterHost;
+  if (!st.filterOpen || st.mode !== "table"){ host.replaceChildren(); return; }
+  const cols = dbCols(ctx.info);
+  const refresh = () => { ctx.persist(); ctx.redrawAll(); };
+  const rows = st.filters.map((f, i) => {
+    const c = cols.find(x => x.name === f.prop) || cols[0], kind = filterKind(c);
+    const pSel = h("select",{id:"flt-p-"+i,"aria-label":"필터할 속성",onchange:ev=>{
+      const nc = cols.find(x => x.name === ev.target.value);
+      st.filters[i] = {prop: nc.name, op: OPS[filterKind(nc)][0][0], val: ""}; refresh(); drawFilters(ctx);
+    }}, cols.map(x => h("option",{value:x.name}, x.name)));
+    pSel.value = c.name;
+    const oSel = h("select",{id:"flt-o-"+i,"aria-label":"조건",onchange:ev=>{
+      f.op = ev.target.value; if (NO_VALUE_OPS.has(f.op)) f.val = ""; refresh(); drawFilters(ctx);
+    }}, OPS[kind].map(([k, l]) => h("option",{value:k}, l)));
+    oSel.value = f.op;
+    let vEl = null;
+    if (!NO_VALUE_OPS.has(f.op)){
+      if (kind === "select" || kind === "multi"){
+        vEl = h("select",{id:"flt-v-"+i,"aria-label":"값",onchange:ev=>{ f.val = ev.target.value; refresh(); }}, h("option",{value:""},"선택…"), optionsOf(c).map(o => h("option",{value:o.name}, o.name)));
+        vEl.value = f.val || "";
+      } else {
+        vEl = h("input",{id:"flt-v-"+i,type: kind === "date" ? "date" : kind === "number" ? "number" : "text","aria-label":"값",autocomplete:"off",placeholder:"값",value:f.val || "",
+          oninput:ev=>{ f.val = ev.target.value; refresh(); }});
+      }
+    }
+    return h("div",{class:"flt-row"}, pSel, oSel, vEl, h("button",{class:"btn ghost",type:"button","aria-label":"조건 지우기",onclick:()=>{ st.filters.splice(i, 1); if (!st.filters.length) st.filterOpen = false; refresh(); drawFilters(ctx); }},"✕"));
+  });
+  host.replaceChildren(h("div",{class:"io-panel flt-panel"},
+    h("div",{class:"io-head"}, h("strong",null,"필터"), h("span",{class:"meta"}, "아래 조건을 모두 만족하는 행만 보여요")),
+    ...rows,
+    h("div",{class:"io-acts"},
+      h("button",{class:"btn",type:"button",onclick:()=>{ addFilter(ctx); }},"＋ 조건 추가"),
+      st.filters.length ? h("button",{class:"btn ghost",type:"button",onclick:()=>{ st.filters = []; st.filterOpen = false; refresh(); drawFilters(ctx); }},"모두 지우기") : null,
+      ctx.hasMore ? h("span",{class:"meta"},"일부 행만 불러온 상태예요. 위쪽 ‘모두 불러오기’를 누르면 전체에서 걸러요.") : null)));
+}
+
+/* ---------- import / export (Excel · CSV) ---------- */
+let xlsxP = null;
+function loadXlsx(){
+  if (window.XLSX) return Promise.resolve(window.XLSX);
+  return xlsxP ||= new Promise((res, rej) => {
+    const s = document.createElement("script");
+    s.src = "https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js";
+    s.onload = () => window.XLSX ? res(window.XLSX) : (xlsxP = null, rej(new Error("xlsx")));
+    s.onerror = () => { xlsxP = null; rej(new Error("xlsx")); };
+    document.head.append(s);
+  });
+}
+function ioPanel(ctx, title, ...kids){
+  ctx.panelHost.replaceChildren(h("div",{class:"io-panel"},
+    h("div",{class:"io-head"}, h("strong",null,title), h("button",{class:"btn ghost",type:"button",onclick:()=>ctx.panelHost.replaceChildren()},"닫기")),
+    ...kids));
+}
+function shownRows(ctx){
+  const cols = dbCols(ctx.info), st = ctx.st;
+  let list = ctx.rows.slice();
+  const q = st.q.trim().toLowerCase();
+  if (q) list = list.filter(r => cols.some(c => cellText(c, r).toLowerCase().includes(q)));
+  list = applyFilters(ctx, list);
+  if (st.sort){
+    const c = cols.find(x => x.name === st.sort.prop);
+    if (c){ const d = st.sort.dir === "asc" ? 1 : -1; list.sort((a, b) => cmpKeys(sortKey(c, a), sortKey(c, b), d)); }
+  }
+  return list;
+}
+function exportVal(c, r){
+  const v = r[c.name];
+  switch (c.type){
+    case "number": return v == null || v === "" ? "" : (isNaN(Number(v)) ? String(v) : Number(v));
+    case "checkbox": return isYes(v);
+    case "date": {
+      const s = r["date:"+c.name+":start"], e = r["date:"+c.name+":end"];
+      const f = x => /T\d/.test(x) ? toLocalDT(x).replace("T", " ") : String(x).slice(0, 10);
+      return s ? f(s) + (e ? " ~ " + f(e) : "") : "";
+    }
+    case "multi_select": return listOf(v).join(", ");
+    case "relation": return listOf(v).map(u => { const i = idOf(u), t = i && titleCache[i]; return t ? splitTitle(t).title : u; }).join(", ");
+    case "title": case "text": return plainText(v);
+    default: { const a = listOf(v).filter(x => !/^user:\/\//.test(x)); return a.length > 1 ? a.join(", ") : (v == null ? "" : plainText(v)); }
+  }
+}
+function csvCell(x){
+  let s = typeof x === "boolean" ? (x ? "TRUE" : "FALSE") : String(x == null ? "" : x);
+  if (typeof x === "string" && /^[=@]|^[+\-](?!\d)/.test(s)) s = "'" + s;      // keep Excel from running text as a formula
+  return /[",\r\n]/.test(s) ? '"' + s.replace(/"/g, '""') + '"' : s;
+}
+async function saveFile(filename, data){
+  const dl = await (window.claude?.use?.("downloads").catch(() => null) ?? Promise.resolve(null));
+  if (!dl) throw {code:"no_downloads"};
+  return dl.save({filename, data});
+}
+function openExport(ctx){
+  const status = h("div",{class:"meta",role:"status"});
+  const btns = [];
+  const go = async fmt => {
+    btns.forEach(b => b.disabled = true);
+    try{
+      status.textContent = "모든 행을 불러오는 중…";
+      const got = await ctx.loadAll();
+      const cols = visibleCols(ctx), list = shownRows(ctx);
+      const header = cols.map(c => c.name);
+      const matrix = list.map(r => cols.map(c => exportVal(c, r)));
+      const base = (ctx.info.title || document.querySelector(".title")?.textContent || "database").replace(/[\\/:*?"<>|]/g, " ").trim().slice(0, 60) || "database";
+      const stamp = ymd(new Date()).replace(/-/g, "");
+      status.textContent = "파일을 만드는 중…";
+      let res;
+      if (fmt === "xlsx"){
+        const X = await loadXlsx();
+        const ws = X.utils.aoa_to_sheet([header, ...matrix]);
+        ws["!cols"] = cols.map((c, i) => ({wch: Math.min(60, Math.max(10, String(c.name).length + 2, ...matrix.slice(0, 60).map(row => String(row[i]).length + 2)))}));
+        const wb = X.utils.book_new();
+        X.utils.book_append_sheet(wb, ws, base.replace(/[\[\]]/g, "").slice(0, 31) || "Sheet1");
+        res = await saveFile(base+"_"+stamp+".xlsx", new Blob([X.write(wb, {bookType:"xlsx", type:"array"})], {type:"application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"}));
+      } else {
+        const text = "﻿" + [header, ...matrix].map(row => row.map(csvCell).join(",")).join("\r\n");
+        res = await saveFile(base+"_"+stamp+".csv", new Blob([text], {type:"text/csv"}));
+      }
+      status.textContent = list.length+"행을 저장했어요."+(got.complete ? "" : " 행이 많아 앞의 "+got.count+"행까지만 담았어요.");
+      toast("내보내기를 마쳤어요");
+    }catch(e){
+      status.textContent = e && e.code === "declined" ? "저장을 취소했어요."
+        : e && e.code === "no_downloads" ? "이 화면에서는 파일 저장을 쓸 수 없어요. claude.ai에서 열어 주세요."
+        : e && /xlsx/.test(String(e.message)) ? "Excel 도구를 불러오지 못했어요. CSV로 저장해 보세요."
+        : e && e.code === "too_large" ? "파일이 너무 커서 저장하지 못했어요."
+        : errInfo(e).msg;
+    }finally{ btns.forEach(b => b.disabled = false); }
+  };
+  btns.push(h("button",{class:"btn primary",type:"button",onclick:()=>go("xlsx")},"Excel (.xlsx)"), h("button",{class:"btn",type:"button",onclick:()=>go("csv")},"CSV (.csv)"));
+  ioPanel(ctx, "내보내기",
+    h("p",{class:"meta"}, "선택한 보기("+((ctx.info.views.find(v => v.url === ctx.info.view) || {}).name || "기본")+")의 행 중 화면에 적용된 필터·찾기·정렬 결과를 모두 저장해요. 화면에 20행씩 끊어 보이는 것과는 상관없어요."
+      +(ctx.st.filters.length || ctx.st.q ? " 지금 조건에 맞는 행은 "+shownRows(ctx).length+"행이에요." : " 지금은 걸린 조건이 없어서 보기의 모든 행이 담겨요.")),
+    h("div",{class:"io-acts"}, ...btns), status);
+}
+
+const IMPORTABLE = new Set(["title","text","number","select","status","multi_select","date","checkbox","url","email","phone_number","relation"]);
+const normName = x => String(x).toLowerCase().replace(/\s+/g, " ").trim();
+const splitNames = s => String(s).split(/[,;，、\n]/).map(t => t.trim()).filter(Boolean);
+const ROW_CAP = 500, CHUNK = 25;
+function decodeText(buf){
+  try{ return new TextDecoder("utf-8", {fatal:true}).decode(buf).replace(/^﻿/, ""); }
+  catch(e){ return new TextDecoder("euc-kr").decode(buf); }      // Excel's plain "CSV" is often CP949
+}
+function dateOne(x){
+  if (x instanceof Date){ if (isNaN(x)) return null; return {y:x.getFullYear(), m:x.getMonth()+1, d:x.getDate(), hh:x.getHours(), mm:x.getMinutes(), t:!!(x.getHours() || x.getMinutes())}; }
+  if (typeof x === "number"){
+    if (x < 20000 || x > 80000) return null;
+    const d = new Date(Math.round((x - 25569) * 86400) * 1000);
+    return {y:d.getUTCFullYear(), m:d.getUTCMonth()+1, d:d.getUTCDate(), hh:d.getUTCHours(), mm:d.getUTCMinutes(), t:!!(d.getUTCHours() || d.getUTCMinutes())};
+  }
+  const m = /(\d{4})\s*[-./년]\s*(\d{1,2})\s*[-./월]\s*(\d{1,2})(?:\s*일)?(?:[ T]+(\d{1,2}):(\d{2}))?/.exec(String(x));
+  if (!m) return null;
+  const o = {y:+m[1], m:+m[2], d:+m[3], hh:+(m[4] || 0), mm:+(m[5] || 0), t:m[4] != null};
+  return o.m >= 1 && o.m <= 12 && o.d >= 1 && o.d <= 31 ? o : null;
+}
+function dateIso(p, withTime){
+  const d = p.y+"-"+pad(p.m)+"-"+pad(p.d);
+  return withTime ? d+"T"+pad(p.hh)+":"+pad(p.mm)+":00"+tzOffset() : d;
+}
+function parseDateCell(v){
+  let a = v, b = null;
+  if (typeof v === "string"){ const parts = v.split(/\s*(?:→|~|–|—)\s*/); a = parts[0]; b = parts[1] || null; }
+  const p1 = dateOne(a); if (!p1) return null;
+  const p2 = b ? dateOne(b) : null;
+  const t = p1.t || (p2 && p2.t);
+  return {start: dateIso(p1, t), end: p2 ? dateIso(p2, t) : null, dt: !!t};
+}
+function convertCell(c, v, o, w){
+  if (v == null) return null;
+  const isDate = v instanceof Date;
+  const s = isDate ? "" : String(v).trim();
+  if (!isDate && s === "") return null;
+  const optName = x => { const f = optionsOf(c).find(op => op.name.toLowerCase() === x.toLowerCase()); return f ? f.name : null; };
+  switch (c.type){
+    case "checkbox": return {[c.name]: (v === true || (typeof v === "number" && v !== 0) || /^(true|yes|y|1|✔|✓|v|checked|예|네|완료|체크)$/i.test(s)) ? "__YES__" : "__NO__"};
+    case "number": {
+      if (typeof v === "number") return {[c.name]: v};
+      const n = Number(s.replace(/[^0-9.\-+eE]/g, ""));
+      if (!/\d/.test(s) || !isFinite(n)){ w.badNum++; return null; }
+      return {[c.name]: n};
+    }
+    case "date": {
+      const d = parseDateCell(v);
+      if (!d){ w.badDate++; return null; }
+      const out = {["date:"+c.name+":start"]: d.start, ["date:"+c.name+":is_datetime"]: d.dt ? 1 : 0};
+      if (d.end) out["date:"+c.name+":end"] = d.end;
+      return out;
+    }
+    case "select": case "status": {
+      const k = optName(s);
+      if (!k){ if (o.skipUnknown){ w.unknown.add(s); return null; } w.newOpt.add(s); return {[c.name]: s}; }
+      return {[c.name]: k};
+    }
+    case "multi_select": {
+      const keep = [];
+      for (const x of s.split(/[,;，、\n]/).map(t => t.trim()).filter(Boolean)){
+        const k = optName(x);
+        if (k) keep.push(k);
+        else if (o.skipUnknown) w.unknown.add(x);
+        else { w.newOpt.add(x); keep.push(x); }
+      }
+      return keep.length ? {[c.name]: JSON.stringify(keep)} : null;
+    }
+    case "relation": {
+      /* like Notion: a name that matches exactly one page title in the linked database becomes a link */
+      const R = o.rel && o.rel[c.name];
+      const urls = [];
+      for (const nm of splitNames(s)){
+        const hit = R && R.map.get(normName(nm));
+        if (hit){ if (!urls.includes(hit.url)) urls.push(hit.url); if (R.dup.has(normName(nm))) w.dupRel.add(nm); }
+        else w.noRel.add(nm);
+      }
+      return urls.length ? {[c.name]: urls} : null;                 // Notion wants a real array of page URLs, not a JSON string
+    }
+    default: return {[c.name]: isDate ? ymd(v) : s};
+  }
+}
+function openImport(ctx){
+  const {info} = ctx;
+  const targets = dbCols(info).filter(c => IMPORTABLE.has(c.type));
+  const S = {wb:null, header:[], data:[], map:[], skipUnknown:true, running:false, fileName:"", rel:{}, found:{}, relBusy:false};
+  /* relation columns: resolve each distinct name to a page of the linked database.
+     Candidates come from the linked database (loaded once, remembered); names not in that list are looked up by search. */
+  async function prepareRelations(){
+    if (S.relBusy) return;
+    S.relBusy = true;
+    try{
+      for (let again = true; again; ){
+        again = false;
+        for (const c of targets.filter(t => t.type === "relation")){
+          const idx = S.map.indexOf(c.name);
+          const have = S.rel[c.name];
+          if (idx < 0){ delete S.rel[c.name]; continue; }
+          if (have && have.idx === idx) continue;
+          const src = relSource(c);
+          const names = [...new Set(S.data.flatMap(row => splitNames(row[idx] == null ? "" : (row[idx] instanceof Date ? "" : row[idx]))))];
+          const map = new Map(), dup = new Set();
+          S.rel[c.name] = {idx, map, dup, busy:true};
+          drawMap();
+          const found = S.found[src] ||= new Map();
+          let items = [];
+          if (src){ try{ items = await loadCandidates(src); }catch(e){} }
+          for (const it of items){ const k = normName(splitTitle(it.title).title || it.title); if (map.has(k) && map.get(k).id !== it.id) dup.add(k); else map.set(k, it); }
+          let looked = 0;
+          for (const nm of names){
+            const k = normName(nm);
+            if (map.has(k)) continue;
+            if (found.has(k)){ if (found.get(k)) map.set(k, found.get(k)); continue; }
+            if (!src || looked >= 40) continue;
+            looked++;
+            try{
+              const res = (await searchPages(nm, src)).filter(x => normName(splitTitle(x.title).title || x.title) === k);
+              found.set(k, res[0] || null);
+              if (res.length > 1) dup.add(k);
+              if (res[0]) map.set(k, res[0]);
+            }catch(e){ break; }
+          }
+          S.rel[c.name].busy = false;
+          drawMap();
+          again = true;
+        }
+      }
+    } finally { S.relBusy = false; }
+  }
+  const norm = x => String(x).toLowerCase().replace(/[\s_\-]/g, "");
+  const body = h("div",{class:"io-body"});
+  const fileIn = h("input",{type:"file",id:"io-file",accept:".xlsx,.xls,.csv,.tsv,.txt","aria-label":"가져올 파일"});
+  function pickSheet(name){
+    const X = window.XLSX;
+    const aoa = X.utils.sheet_to_json(S.wb.Sheets[name], {header:1, raw:true, defval:""}).filter(r => r.some(x => String(x).trim() !== ""));
+    S.header = (aoa[0] || []).map((x, i) => String(x).trim() || "(열 "+(i+1)+")");
+    S.data = aoa.slice(1);
+    const used = new Set();
+    S.map = S.header.map(hd => { const t = targets.find(c => !used.has(c.name) && norm(c.name) === norm(hd)); if (t) used.add(t.name); return t ? t.name : ""; });
+  }
+  function convertAll(){
+    const w = {badNum:0, badDate:0, unknown:new Set(), newOpt:new Set(), noRel:new Set(), dupRel:new Set()};
+    const pages = [];
+    let empty = 0;
+    for (const row of S.data.slice(0, ROW_CAP)){
+      const props = {};
+      S.map.forEach((tn, i) => {
+        if (!tn) return;
+        const c = targets.find(x => x.name === tn);
+        const r = convertCell(c, row[i], {skipUnknown:S.skipUnknown, rel:S.rel}, w);
+        if (r) Object.assign(props, r);
+      });
+      if (!Object.keys(props).length){ empty++; continue; }
+      if (props[info.titleProp] == null) props[info.titleProp] = "제목 없음";
+      pages.push({properties: props});
+    }
+    return {pages, w, empty, cut: Math.max(0, S.data.length - ROW_CAP)};
+  }
+  function drawMap(){
+    const res = convertAll();
+    const titleMapped = S.map.includes(info.titleProp);
+    const sheetSel = S.wb.SheetNames.length > 1 ? h("label",{class:"io-line"}, "시트",
+      h("select",{id:"io-sheet",onchange:ev=>{ pickSheet(ev.target.value); S.rel = {}; drawMap(); prepareRelations(); }}, S.wb.SheetNames.map(n => h("option",{value:n}, n)))) : null;
+    const rowsEl = S.header.map((hd, i) => {
+      const sample = String(S.data[0] && S.data[0][i] != null ? (S.data[0][i] instanceof Date ? ymd(S.data[0][i]) : S.data[0][i]) : "").slice(0, 30);
+      const sel = h("select",{id:"io-map-"+i,"aria-label":hd+" 열을 연결할 속성",onchange:ev=>{ S.map[i] = ev.target.value; drawMap(); prepareRelations(); }},
+        h("option",{value:""},"가져오지 않음"),
+        targets.map(c => h("option",{value:c.name,disabled:S.map.includes(c.name) && S.map[i] !== c.name}, (DB_SYM[c.type] || "·")+" "+c.name)));
+      sel.value = S.map[i];
+      return h("div",{class:"io-map"}, h("div",{class:"io-col"}, h("span",null,hd), sample ? h("span",{class:"meta"}, "예: "+sample) : null), h("span",{"aria-hidden":"true"},"→"), sel);
+    });
+    const notes = [];
+    if (!titleMapped) notes.push("제목 속성("+info.titleProp+")에 연결할 열을 골라 주세요.");
+    if (res.w.badNum) notes.push("숫자로 읽지 못한 칸 "+res.w.badNum+"개는 비워 둬요.");
+    if (res.w.badDate) notes.push("날짜로 읽지 못한 칸 "+res.w.badDate+"개는 비워 둬요.");
+    if (res.w.unknown.size) notes.push("목록에 없는 선택지 "+res.w.unknown.size+"개("+[...res.w.unknown].slice(0,5).join(", ")+(res.w.unknown.size > 5 ? " …" : "")+")는 비워 둬요.");
+    if (res.w.newOpt.size) notes.push("새 선택지 "+res.w.newOpt.size+"개("+[...res.w.newOpt].slice(0,5).join(", ")+")가 함께 만들어질 수 있어요.");
+    const relBusy = Object.values(S.rel).some(x => x.busy);
+    if (relBusy) notes.push("관계형 열에 연결할 페이지를 찾는 중이에요…");
+    else {
+      if (res.w.noRel.size) notes.push("이름이 같은 페이지를 못 찾은 관계형 값 "+res.w.noRel.size+"개("+[...res.w.noRel].slice(0,5).join(", ")+(res.w.noRel.size > 5 ? " …" : "")+")는 비워 둬요.");
+      if (res.w.dupRel.size) notes.push("같은 이름의 페이지가 여러 개라 첫 번째로 연결한 값 "+res.w.dupRel.size+"개("+[...res.w.dupRel].slice(0,5).join(", ")+")가 있어요.");
+    }
+    if (res.empty) notes.push("비어 있는 행 "+res.empty+"개는 건너뛰어요.");
+    if (res.cut) notes.push("한 번에 "+ROW_CAP+"행까지만 가져와요. 나머지 "+res.cut+"행은 파일을 나눠 다시 가져오세요.");
+    const prev = res.pages.slice(0, 3).map(p => Object.entries(p.properties).filter(([k]) => !/:is_datetime$/.test(k)).map(([k, v]) => k.replace(/^date:|:start$/g, "")+": "+String(v).replace(/^__YES__$/, "체크").replace(/^__NO__$/, "체크 안 함")).join(" · "));
+    const run = h("button",{class:"btn primary",type:"button",id:"io-run",disabled:!titleMapped || !res.pages.length || S.running || relBusy,onclick:()=>runImport(res)}, res.pages.length+"행 가져오기");
+    body.replaceChildren(
+      h("div",{class:"io-line"}, h("strong",null,S.fileName), h("span",{class:"meta"}, S.data.length+"행 · "+S.header.length+"열")),
+      sheetSel,
+      h("div",{class:"io-maps"}, rowsEl),
+      h("label",{class:"io-line"}, h("input",{type:"checkbox",id:"io-skip",checked:S.skipUnknown,onchange:ev=>{ S.skipUnknown = ev.target.checked; drawMap(); }}), "목록에 없는 선택지는 비워 두기"),
+      prev.length ? h("div",{class:"io-prev"}, h("div",{class:"meta"},"미리보기 (앞 3행)"), prev.map(t => h("div",{class:"io-prow"}, t))) : null,
+      notes.length ? h("ul",{class:"io-notes"}, notes.map(n => h("li",null,n))) : null,
+      h("div",{class:"io-acts"}, run, h("span",{class:"meta",id:"io-progress",role:"status"}, "가져오면 Notion에 바로 행이 추가돼요.")));
+  }
+  async function runImport(res){
+    if (S.running) return;
+    S.running = true;
+    const run = $("io-run"), prog = $("io-progress");
+    if (run) run.disabled = true;
+    const src = info.sources[0].replace("collection://", "");
+    let done = 0;
+    try{
+      for (let i = 0; i < res.pages.length; i += CHUNK){
+        const part = res.pages.slice(i, i + CHUNK);
+        if (prog) prog.textContent = done+" / "+res.pages.length+"행 추가하는 중…";
+        await write("notion-create-pages", {parent:{type:"data_source_id", data_source_id: src}, pages: part, allow_async:false});
+        done += part.length;
+      }
+      delete dbMemo[ctx.id];
+      await ctx.refetch();
+      toast(done+"행을 가져왔어요");
+      ctx.panelHost.replaceChildren(h("div",{class:"io-panel"}, h("div",{class:"io-line"}, done+"행을 Notion에 추가했어요."), h("div",{class:"meta"},"표에 안 보이면 이 보기에 걸린 필터 때문일 수 있어요. Notion에서는 모두 들어가 있어요.")));
+    }catch(e){
+      S.running = false;
+      if (prog) prog.textContent = (done ? done+"행은 이미 추가됐어요. 같은 파일을 다시 가져오면 중복돼요. " : "")+errInfo(e).msg;
+      if (run) run.disabled = false;
+      if (done){ delete dbMemo[ctx.id]; ctx.refetch().catch(() => {}); }
+    }
+    S.running = false;
+  }
+  fileIn.addEventListener("change", async () => {
+    const f = fileIn.files && fileIn.files[0];
+    if (!f) return;
+    S.fileName = f.name;
+    body.replaceChildren(h("div",{class:"meta"},"파일을 읽는 중…"));
+    try{
+      const X = await loadXlsx();
+      const buf = await f.arrayBuffer();
+      S.wb = /\.(csv|tsv|txt)$/i.test(f.name) ? X.read(decodeText(buf), {type:"string", raw:true, FS: /\.tsv$/i.test(f.name) ? "\t" : undefined}) : X.read(buf, {type:"array", cellDates:true});
+      pickSheet(S.wb.SheetNames[0]);
+      if (!S.header.length) throw new Error("empty");
+      S.rel = {};
+      drawMap();
+      prepareRelations();
+    }catch(e){
+      body.replaceChildren(h("div",{class:"err"}, e && e.message === "xlsx" ? "Excel 도구를 불러오지 못했어요. 잠시 뒤 다시 시도하거나 CSV로 저장한 파일을 써 보세요." : "파일을 읽지 못했어요. 내용이 있는 Excel(.xlsx)이나 CSV 파일인지 확인해 주세요."));
+    }
+  });
+  ioPanel(ctx, "가져오기",
+    h("p",{class:"meta"},"Excel(.xlsx)이나 CSV 파일의 첫 줄을 열 이름으로 보고, 아래 행들을 이 표에 새 행으로 추가해요. 기존 행은 바꾸지 않아요."),
+    h("label",{class:"io-line"}, "파일", fileIn),
+    body);
+}
+
+/* ---------- database table (spreadsheet view) ---------- */
+const DB_EDIT = new Set(["title","text","number","select","status","multi_select","date","checkbox","url","email","phone_number","relation"]);
+const DB_TEXT = new Set(["title","text","number","url","email","phone_number"]);
+const DB_SYM = {title:"Aa",text:"≡",number:"#",select:"▾",status:"◐",multi_select:"☰",date:"◷",checkbox:"☑",url:"↗",email:"@",phone_number:"☏",person:"◉",people:"◉",relation:"↗",formula:"Σ",rollup:"Σ",created_time:"◷",last_edited_time:"◷",created_by:"◉",last_edited_by:"◉"};
+/* select / multi-select list their choices in `options`; a status property lists them by group instead
+   (할 일 · 진행 중 · 완료), so flatten the groups and colour them by group */
+const STATUS_COLOR = {to_do:"gray", in_progress:"blue", complete:"green", current:"blue", future:"gray"};
+function optionsOf(c){
+  if (Array.isArray(c.options) && c.options.length) return c.options;
+  if (c.groups && typeof c.groups === "object"){
+    const out = [];
+    const order = ["to_do", "future", "current", "in_progress", "complete"];
+    const keys = [...order.filter(g => g in c.groups), ...Object.keys(c.groups).filter(g => !order.includes(g))];
+    for (const g of keys) for (const o of (c.groups[g] || [])) if (o && o.name) out.push({name:o.name, color:o.color || STATUS_COLOR[g] || "gray", group:g});
+    return out;
+  }
+  return [];
+}
+function dbCols(info){
+  const all = Object.values(info.schema || {}).filter(c => c && c.name && c.type !== "button");
+  return [...all.filter(c => c.type === "title"), ...all.filter(c => c.type !== "title")];
+}
+function sortControl(ctx){
+  const {st} = ctx, cols = dbCols(ctx.info);
+  const sel = h("select",{id:"db-sort","aria-label":"정렬 기준",onchange:()=>{
+    st.sortSet = true;
+    st.sort = sel.value ? {prop: sel.value, dir: (st.sort && st.sort.dir) || "asc"} : null;
+    ctx.persist(); ctx.redrawAll();
+  }}, h("option",{value:""},"정렬 안 함"), cols.map(c => h("option",{value:c.name}, c.name)));
+  sel.value = st.sort ? st.sort.prop : "";
+  return h("span",{class:"sortctl"},
+    h("span",{class:"meta","aria-hidden":"true"},"정렬"), sel,
+    st.sort ? h("button",{class:"btn ghost",type:"button",title:"정렬 방향 바꾸기",onclick:()=>{ st.sort.dir = st.sort.dir === "asc" ? "desc" : "asc"; ctx.persist(); ctx.redrawAll(); }}, st.sort.dir === "asc" ? "↑ 오름차순" : "↓ 내림차순") : null);
+}
+function colWidth(c, st){ return (st && st.widths && st.widths[c.name]) || ({title:280, checkbox:90, number:120, date:200, multi_select:220, relation:240})[c.type] || 180; }
+function isYes(v){ return v === true || v === 1 || v === "__YES__" || v === "Yes" || v === "true"; }
+/* Notion hands rich text back with markup for line breaks (<br>, </br>, <p>…</p>) and escaped characters:
+   turn that into plain text with real newlines so cells show lines, not tags */
+function plainText(v){
+  if (v == null) return "";
+  let s = String(v);
+  if (!/[<&\\]/.test(s)) return s;
+  s = s.replace(/<\s*\/?\s*br\s*\/?\s*>/gi, "\n")
+    .replace(/<\/p\s*>\s*<p\b[^>]*>/gi, "\n")
+    .replace(/<\s*\/?p\b[^>]*>/gi, "\n")
+    .replace(/&lt;/g, "<").replace(/&gt;/g, ">").replace(/&nbsp;/g, " ").replace(/&amp;/g, "&")
+    .replace(/(^|\n)\\(?=[^\\\n])/g, "$1")                    // a stray "\" at the start of a line
+    .replace(/\\(?=\n|$)/g, "")                                // a "\" at the end of a line (Notion's hard-break marker)
+    .replace(/\\([!-\/:-@\[-`{-~])/g, "$1");                  // markdown escapes such as "1\." → "1."
+  return s.replace(/\n{3,}/g, "\n\n").replace(/^\n+|\n+$/g, "");
+}
+function listOf(v){
+  if (v == null || v === "") return [];
+  if (Array.isArray(v)) return v.map(String);
+  const s = String(v);
+  if (s.startsWith("[")){ try{ const a = JSON.parse(s); if (Array.isArray(a)) return a.map(String); }catch(e){} }
+  return [s];
+}
+function chipFor(c, name){
+  const opt = optionsOf(c).find(o => o.name === name);
+  const color = opt && opt.color && opt.color !== "default" ? opt.color : "gray";
+  return h("span",{class:"chip c-"+color}, name);
+}
+function cellText(c, r){
+  if (c.type === "date") return r["date:"+c.name+":start"] || "";
+  if (c.type === "multi_select") return listOf(r[c.name]).join(", ");
+  const v = r[c.name];
+  return v == null ? "" : (c.type === "text" || c.type === "title" ? plainText(v) : String(v));
+}
+function sortKey(c, r){
+  const v = r[c.name];
+  switch (c.type){
+    case "number": return v == null || v === "" || isNaN(Number(v)) ? null : Number(v);
+    case "date": return r["date:"+c.name+":start"] || null;
+    case "checkbox": return isYes(v) ? 1 : 0;
+    default: { const t = cellText(c, r); return t === "" ? null : t; }
+  }
+}
+function cmpKeys(a, b, d){
+  if (a == null && b == null) return 0;
+  if (a == null) return 1;            // empty cells always last
+  if (b == null) return -1;
+  if (typeof a === "number" && typeof b === "number") return (a - b) * d;
+  return String(a).localeCompare(String(b), "ko", {numeric:true}) * d;
+}
+function cellView(c, r){
+  const v = r[c.name];
+  switch (c.type){
+    case "title": return h("span",{class:"ct"}, plainText(v));
+    case "text": return v == null || v === "" ? null : h("span",{class:"tx"}, plainText(v));
+    case "checkbox": return h("span",{class:"cb"+(isYes(v)?" on":""),role:"img","aria-label":isYes(v)?"체크됨":"체크 안 됨"});
+    case "select": case "status": return v ? chipFor(c, v) : null;
+    case "multi_select": return listOf(v).map(x => chipFor(c, x));
+    case "date": { const s = r["date:"+c.name+":start"], e = r["date:"+c.name+":end"]; return s ? fmtDate(s) + (e ? " → "+fmtDate(e) : "") : null; }
+    case "number": return v == null || v === "" ? null : (isNaN(Number(v)) ? String(v) : Number(v).toLocaleString("ko-KR"));
+    case "url": return v ? h("a",{href: /^https?:\/\//i.test(v) ? v : null, target:"_blank", rel:"noopener noreferrer"}, v) : null;
+    default: {
+      const arr = listOf(v);
+      if (arr.length && arr.every(x => /^https?:\/\//.test(x))) return arr.map(relChip);
+      if (arr.length && arr.every(x => x.startsWith("user://"))) return arr.length + "명";
+      return propValue(v);
+    }
+  }
+}
+
+/* ---------- relation titles: linked page ids → titles, fetched a few at a time and remembered ---------- */
+const TREAD = {cache:{staleTime:1800000, gcTime:3600000}};
+const titleCache = load("titles") || {};
+const titleFail = new Set(), titleWait = new Set(), titleQ = [];
+let titleActive = 0, titleSaveT = null;
+function relTitle(id){
+  if (titleCache[id] != null) return titleCache[id];
+  if (titleFail.has(id)) return "열 수 없는 페이지";
+  if (!titleWait.has(id) && mcp){ titleWait.add(id); titleQ.push(id); pumpTitles(); }
+  return null;
+}
+function pumpTitles(){
+  while (titleActive < 4 && titleQ.length){
+    const id = titleQ.shift();
+    titleActive++;
+    read("notion-fetch", {id}, false, TREAD)
+      .then(p => { const icon = p && p.icon && p.icon.emoji; titleCache[id] = (icon ? icon+" " : "") + (stripLeadingEmoji((p && p.title) || "", icon) || "제목 없음"); })
+      .catch(() => { titleFail.add(id); })
+      .finally(() => { titleActive--; titleWait.delete(id); paintTitle(id); saveTitles(); pumpTitles(); });
+  }
+}
+function splitTitle(s){
+  const em = /^\p{Extended_Pictographic}️?\s*/u.exec(s || "");
+  return em ? {icon: em[0].trim(), title: s.slice(em[0].length)} : {icon: null, title: s || ""};
+}
+function paintTitle(id){
+  const t = titleCache[id] != null ? titleCache[id] : "열 수 없는 페이지";
+  document.querySelectorAll('[data-rid="'+id+'"]').forEach(b => { b.textContent = t; b.title = t; });
+  const s = splitTitle(t);
+  document.querySelectorAll('[data-tid="'+id+'"]').forEach(b => { b.textContent = s.title || t; b.closest(".item") && (b.closest(".item").title = s.title || t); });
+  if (s.icon) document.querySelectorAll('[data-iid="'+id+'"]').forEach(b => { b.textContent = s.icon; });
+}
+
+/* ---------- relation editing: candidates are loaded once per target database and remembered ---------- */
+const relCandMem = {};
+const CAND_TTL = 86400000;   // remembered candidates stay usable for a day; "목록 새로고침" reloads them
+function relSource(c){ const m = JSON.stringify(c).match(/collection:\/\/[^"\s{}\\]+/i); return m ? m[0] : null; }
+async function loadCandidates(src, fresh){
+  if (!fresh){
+    if (relCandMem[src]) return relCandMem[src];
+    const ls = load("rc:"+src);
+    if (ls && Array.isArray(ls.items) && Date.now() - ls.at < CAND_TTL){ relCandMem[src] = ls.items; return ls.items; }
+  }
+  const p = await read("notion-fetch", {id: src}, fresh, TREAD);
+  const info = parseDb(p);
+  if (!info.view) throw {code:"no_view"};
+  const r = await read("notion-query-data-sources", await viewInput(info.view), fresh, QREAD);
+  const rows = (r && (r.results || r.rows)) || [];
+  const items = rows.map(x => ({id: idOf(x.url), url: x.url, title: (info.titleProp && x[info.titleProp]) || "제목 없음"})).filter(x => x.id);
+  for (const x of items) titleCache[x.id] = x.title;
+  saveTitles();
+  relCandMem[src] = items;
+  store("rc:"+src, {at: Date.now(), items: items.slice(0, 500)});
+  return items;
+}
+let searchSchema;
+async function searchPages(q, src){
+  if (searchSchema === undefined){
+    try{ const d = mcp.describeTool ? await mcp.describeTool(SERVER, "notion-search") : null; searchSchema = (d && d.inputSchema) || null; }
+    catch(e){ searchSchema = null; }
+  }
+  const input = {query: q, page_size: 20};
+  const p = searchSchema && searchSchema.properties;
+  if (src) input.data_source_url = src;
+  const r = await read("notion-search", input, false, TREAD);
+  return ((r && r.results) || []).filter(x => x.type === "page").map(x => ({id: idOf(x.url || x.id), url: x.url, title: x.title || "제목 없음"})).filter(x => x.id);
+}
+function rowProps(p){ try{ const raw = between((p && p.text) || "", "properties"); return raw ? JSON.parse(raw) : {}; }catch(e){ return {}; } }
+function relEditor(ctx, td, c, r, finish){
+  const src = relSource(c);
+  const linked = listOf(r[c.name]).map(u => ({id: idOf(u), url: u})).filter(x => x.id);
+  const added = new Map(), removed = new Set();
+  const cur = () => [...linked.filter(x => !removed.has(x.id)), ...added.values()];
+  const getVal = () => ({added: [...added.values()], removed: [...removed], shown: linked.length});
+  /* seed with pages already linked anywhere in this column: free, and usually the likely picks */
+  const seed = new Map();
+  for (const row of ctx.rows) for (const u of listOf(row[c.name])){ const id = idOf(u); if (id && !seed.has(id)) seed.set(id, {id, url: u}); }
+  let cands = [...seed.values()], remote = [];
+  const box = h("div",{class:"rel-pop",id:"cell-ed",tabindex:"-1"});
+  const selEl = h("div",{class:"rel-sel"});
+  const q = h("input",{class:"rel-q",id:"rel-q",type:"search",autocomplete:"off",placeholder:"연결할 페이지 찾기 (Enter: Notion 검색)","aria-label":"연결할 페이지 찾기"});
+  const listEl = h("div",{class:"rel-list",role:"listbox","aria-label":"연결 후보"});
+  const status = h("div",{class:"meta"});
+  const nameOf = x => titleCache[x.id] != null ? titleCache[x.id] : (x.title || relTitle(x.id) || "…");
+  function drawSel(){
+    const items = cur();
+    selEl.replaceChildren(...(items.length ? items.map(x => h("span",{class:"rel-tag"},
+      h("span",{"data-rid":x.id}, nameOf(x)),
+      h("button",{type:"button","aria-label":"연결 끊기",title:"연결 끊기",onmousedown:ev=>ev.preventDefault(),onclick:()=>{ if (added.has(x.id)) added.delete(x.id); else removed.add(x.id); drawSel(); drawList(); q.focus(); }},"✕")))
+      : [h("span",{class:"meta"},"연결된 페이지 없음")]));
+  }
+  function drawList(){
+    const term = q.value.trim().toLowerCase();
+    const on = new Set(cur().map(x => x.id));
+    const seen = new Set(), out = [];
+    for (const x of [...remote, ...cands]){
+      if (seen.has(x.id) || on.has(x.id)) continue;
+      seen.add(x.id);
+      if (term && !String(nameOf(x)).toLowerCase().includes(term)) continue;
+      out.push(x);
+      if (out.length >= 40) break;
+    }
+    listEl.replaceChildren(...(out.length ? out.map(x => h("button",{class:"rel-opt",type:"button",role:"option",onmousedown:ev=>ev.preventDefault(),onclick:()=>{
+      if (removed.has(x.id)) removed.delete(x.id);
+      else added.set(x.id, {id: x.id, url: x.url || "https://www.notion.so/"+x.id});
+      drawSel(); drawList(); q.focus();
+    }}, h("span",{"data-rid":x.id}, nameOf(x))))
+      : [h("span",{class:"meta"}, term ? "목록에 없어요. Enter로 Notion에서 찾아보세요." : "후보가 없어요. 이름을 입력하고 Enter를 누르세요.")]));
+  }
+  async function loadList(fresh){
+    if (!src){ status.textContent = "연결 대상 데이터베이스를 알 수 없어 검색으로 찾아요."; return; }
+    status.textContent = fresh ? "후보 목록을 새로 불러오는 중…" : "후보 목록을 불러오는 중…";
+    try{ const items = await loadCandidates(src, fresh); cands = [...items, ...cands]; status.textContent = ""; drawList(); }
+    catch(e){ status.textContent = e && e.code === "no_view" ? "대상 데이터베이스의 보기를 찾지 못해 검색으로 찾아요." : errInfo(e).msg; }
+  }
+  async function remoteSearch(){
+    const term = q.value.trim();
+    if (!term) return;
+    status.textContent = "Notion에서 찾는 중…";
+    try{ remote = await searchPages(term, src); for (const x of remote) if (titleCache[x.id] == null) titleCache[x.id] = x.title; status.textContent = remote.length ? "" : "‘"+term+"’에 맞는 페이지가 없어요."; drawList(); }
+    catch(e){ status.textContent = errInfo(e).msg; }
+  }
+  q.addEventListener("input", drawList);
+  box.addEventListener("keydown", ev => {
+    if (ev.isComposing || ev.keyCode === 229) return;
+    if (ev.key === "Escape"){ ev.preventDefault(); finish(undefined); }
+    else if (ev.key === "Enter" && ev.target === q){ ev.preventDefault(); remoteSearch(); }
+  });
+  box.addEventListener("focusout", ev => { if (!box.contains(ev.relatedTarget)) finish(getVal()); });
+  box.append(selEl, q, status, listEl,
+    h("div",{class:"rel-acts"},
+      h("button",{class:"btn primary",type:"button",onclick:()=>finish(getVal())},"완료"),
+      src ? h("button",{class:"btn ghost",type:"button",onclick:()=>{ loadList(true); q.focus(); }},"목록 새로고침") : null));
+  drawSel(); drawList(); loadList(false);
+  /* widen the column while the picker is open */
+  const table = td.closest("table"), col = table.querySelectorAll("col")[+td.dataset.c];
+  if (colWidth(c, ctx.st) < 340){ col.style.width = "340px"; table.style.width = (tableWidth(ctx) - colWidth(c, ctx.st) + 340) + "px"; }
+  return {ed: box, getVal, focusEl: q};
+}
+/* merge with the row's current links from Notion, write, then read back to confirm */
+async function saveRelation(ctx, c, r, nv){
+  const pid = idOf(r.url);
+  setSave("saving");
+  try{
+    const now = rowProps(await read("notion-fetch", {id: pid}, true));
+    if (!(c.name in now) && nv.shown > 0) throw {code:"tool_error", message:"행의 현재 연결을 읽지 못해 저장을 멈췄어요. 기존 연결을 지우지 않기 위해서예요."};
+    const rm = new Set(nv.removed);
+    const final = listOf(now[c.name]).filter(u => !rm.has(idOf(u)));
+    const have = new Set(final.map(idOf));
+    for (const a of nv.added) if (!have.has(a.id)){ final.push(a.url); have.add(a.id); }
+    const s = await updateSchema();
+    await write("notion-update-page", wrapArgs(s, {page_id: pid, command:"update_properties", properties: {[c.name]: final}}));       // a real array of page URLs (a JSON string is read as one bad link)
+    const got = listOf(rowProps(await read("notion-fetch", {id: pid}, true))[c.name]);
+    r[c.name] = got;
+    freshIds.add(pid);
+    ctx.redraw();
+    const ok = got.length === final.length && final.every(u => got.some(g => idOf(g) === idOf(u)));
+    if (ok){ setSave("saved"); toast("연결을 저장하고 Notion에서 다시 확인했어요 ("+got.length+"개)"); }
+    else { setSave(""); toast("Notion에 저장된 연결이 예상과 달라요. 지금 표에 보이는 것이 실제 값이에요 ("+got.length+"개)."); }
+  }catch(e){
+    ctx.redraw();
+    setSave("error", e, () => saveRelation(ctx, c, r, nv));
+  }
+}
+function saveTitles(){
+  clearTimeout(titleSaveT);
+  titleSaveT = setTimeout(() => {
+    const keys = Object.keys(titleCache);
+    if (keys.length > 1000) keys.slice(0, keys.length - 1000).forEach(k => delete titleCache[k]);
+    store("titles", titleCache);
+  }, 800);
+}
+function forgetTitles(rows){
+  for (const r of rows) for (const v of Object.values(r)) for (const u of listOf(v)) if (/^https?:\/\//.test(u)){ const i = idOf(u); if (i){ delete titleCache[i]; titleFail.delete(i); } }
+}
+function relChip(u){
+  const id = idOf(u), t = id ? relTitle(id) : null;
+  return h("button",{class:"rel-chip",type:"button","data-rid":id,title:t || "",onclick:ev=>{ ev.stopPropagation(); open(u, "page"); }}, t || "…");
+}
+function renderTable(ctx){
+  const {info, st} = ctx;
+  const cols = visibleCols(ctx);
+  if (!cols.length) return h("div",{class:"panel-msg"}, h("p",{text:"이 데이터베이스의 열 정보를 읽을 수 없어요."}));
+  let list = ctx.rows.slice();
+  const q = st.q.trim().toLowerCase();
+  if (q) list = list.filter(r => cols.some(c => cellText(c, r).toLowerCase().includes(q)));
+  list = applyFilters(ctx, list);
+  if (st.sort){
+    const c = cols.find(x => x.name === st.sort.prop);
+    if (c){ const d = st.sort.dir === "asc" ? 1 : -1; list.sort((a, b) => cmpKeys(sortKey(c, a), sortKey(c, b), d)); }
+  }
+  const total = list.length;
+  list = list.slice(0, st.limit || ROW_STEP);
+  ctx.cols = cols;
+  const head = h("tr", null, cols.map((c, ci) => {
+    const s = st.sort && st.sort.prop === c.name ? st.sort.dir : null;
+    return h("th",{scope:"col","aria-sort": s === "asc" ? "ascending" : s === "desc" ? "descending" : "none",
+      draggable: "true", "data-col": c.name,
+      ondragstart: ev => { ev.dataTransfer.setData("text/plain", c.name); ev.dataTransfer.effectAllowed = "move"; ctx.dragCol = c.name; },
+      ondragover: ev => { if (!ctx.dragCol || ctx.dragCol === c.name) return; ev.preventDefault(); ev.currentTarget.classList.add("drop-before"); },
+      ondragleave: ev => ev.currentTarget.classList.remove("drop-before"),
+      ondrop: ev => { ev.preventDefault(); ev.currentTarget.classList.remove("drop-before"); const from = ctx.dragCol; ctx.dragCol = null; if (from && from !== c.name) moveCol(ctx, from, c.name); },
+      ondragend: () => { ctx.dragCol = null; document.querySelectorAll(".drop-before").forEach(x => x.classList.remove("drop-before")); }},
+      h("button",{type:"button",title:"눌러서 정렬 (오름차순 → 내림차순 → 해제)",onclick:()=>{
+        st.sortSet = true;
+        st.sort = !s ? {prop:c.name, dir:"asc"} : s === "asc" ? {prop:c.name, dir:"desc"} : null;
+        ctx.persist(); ctx.redrawAll();
+      }},
+        h("span",{class:"tsym","aria-hidden":"true"}, DB_SYM[c.type] || "·"),
+        h("span",{class:"th-t"}, c.name),
+        s ? h("span",{class:"sort"}, s === "asc" ? "↑" : "↓") : null),
+      resizer(ctx, c, ci));
+  }));
+  const rowsEls = list.map((r, ri) => h("tr", null, cols.map((c, ci) => cellTd(ctx, c, r, ri, ci))));
+  const table = h("table",{class:"grid"+(st.wrap ? " wrapc" : "")},
+    h("colgroup", null, cols.map(c => h("col",{style:"width:"+colWidth(c, st)+"px"}))),
+    h("thead", null, head),
+    h("tbody", null, rowsEls, info.titleProp ? newRowTr(ctx, cols) : null));
+  table.style.width = tableWidth(ctx) + "px";
+  const more = n => { st.limit = n; ctx.redraw(); };
+  return h("div",{class:"gridwrap"}, table,
+    !total ? emptyState(ctx, q)
+      : h("div",{class:"tbl-foot"}, total+"행 중 "+list.length+"행 표시",
+          total > list.length ? h("button",{class:"btn ghost",type:"button",onclick:()=>more(list.length + ROW_STEP)}, ROW_STEP+"행 더 보기") : null,
+          total > list.length ? h("button",{class:"btn ghost",type:"button",onclick:()=>more(total)},"모두 보기") : null,
+          list.length > ROW_STEP ? h("button",{class:"btn ghost",type:"button",onclick:()=>more(ROW_STEP)}, ROW_STEP+"행만 보기") : null));
+}
+const ROW_STEP = 20;
+/* an empty table is usually a view filter set in Notion (e.g. "last 1 week"): say so and offer a view without filters */
+function emptyState(ctx, q){
+  if (q || activeFilterCount(ctx)) return h("p",{class:"meta",style:"padding:10px 4px"}, q ? "‘"+ctx.st.q+"’에 맞는 행이 없어요." : "필터에 맞는 행이 없어요.");
+  const cur = ctx.info.views.find(v => v.url === ctx.info.view);
+  if (cur && cur.filtered && !ctx.rows.length){
+    const open = ctx.info.views.filter(v => !v.filtered);
+    return h("div",{class:"panel-msg"},
+      h("h2",null,"이 보기에는 지금 보여 줄 행이 없어요"),
+      h("p",null,"‘"+cur.name+"’ 보기에 Notion에서 건 필터(예: 최근 1주)가 있어서, 그 조건에 맞는 행이 지금은 없어요. 필터가 없는 보기로 바꾸면 모든 행을 볼 수 있어요."),
+      open.length ? h("div",{class:"io-acts"}, open.map(v => h("button",{class:"btn primary",type:"button",onclick:()=>ctx.switchView(v.url)},"‘"+v.name+"’ 보기로 보기")))
+        : h("p",{class:"meta"},"필터가 없는 보기가 없어요. Notion에서 필터 없는 보기를 하나 만들어 두면 이 앱에서 전체 행을 볼 수 있어요."));
+  }
+  return h("p",{class:"meta",style:"padding:10px 4px"},"아직 행이 없어요. ‘새로 만들기’로 추가하세요.");
+}
+function tableWidth(ctx){ return ctx.cols.reduce((a, c) => a + colWidth(c, ctx.st), 0); }
+/* drag the header edge to resize; double-click it to fit the column to its content */
+function resizer(ctx, c, ci){
+  const rz = h("span",{class:"rz","aria-hidden":"true",title:"끌어서 너비 조절 · 두 번 눌러 내용에 맞춤"});
+  rz.addEventListener("click", ev => ev.stopPropagation());
+  rz.addEventListener("pointerdown", ev => {
+    ev.preventDefault(); ev.stopPropagation();
+    const table = rz.closest("table"), col = table.querySelectorAll("col")[ci];
+    const startX = ev.clientX, startW = colWidth(c, ctx.st);
+    const th = rz.parentNode; th.draggable = false;               // resizing must not start a column drag
+    rz.setPointerCapture(ev.pointerId);
+    rz.classList.add("on");
+    const move = e => {
+      const w = Math.round(Math.max(70, Math.min(900, startW + e.clientX - startX)));
+      ctx.st.widths[c.name] = w; col.style.width = w + "px"; table.style.width = tableWidth(ctx) + "px";
+    };
+    const up = () => {
+      th.draggable = true;
+      rz.classList.remove("on");
+      rz.removeEventListener("pointermove", move); rz.removeEventListener("pointerup", up); rz.removeEventListener("pointercancel", up);
+      ctx.persist();
+    };
+    rz.addEventListener("pointermove", move); rz.addEventListener("pointerup", up); rz.addEventListener("pointercancel", up);
+  });
+  rz.addEventListener("dblclick", ev => {
+    ev.stopPropagation();
+    const table = rz.closest("table");
+    table.classList.add("measure");
+    let w = 90;
+    table.querySelectorAll('td[data-c="'+ci+'"] .cv').forEach(cv => { w = Math.max(w, Math.ceil(cv.getBoundingClientRect().width) + 2); });
+    const th = rz.parentNode.querySelector("button");
+    if (th) w = Math.max(w, Math.ceil(th.scrollWidth) + 4);
+    table.classList.remove("measure");
+    ctx.st.widths[c.name] = Math.min(700, w);
+    ctx.persist(); ctx.redraw();
+  });
+  return rz;
+}
+function focusCell(from, r, c){
+  const t = from.closest("table").querySelector('td[data-r="'+r+'"][data-c="'+c+'"]');
+  if (t) t.focus();
+}
+function cellTd(ctx, c, r, ri, ci){
+  const editable = DB_EDIT.has(c.type);
+  const td = h("td",{tabindex:"0","data-r":ri,"data-c":ci,class:editable ? "ed" : "ro"});
+  const cv = h("div",{class:"cv"}, cellView(c, r));
+  if (DB_TEXT.has(c.type) || c.type === "select" || c.type === "status" || c.type === "multi_select"){ const tt = cellText(c, r); if (tt) cv.title = tt; }
+  if (c.type === "title"){
+    cv.append(h("button",{class:"open-btn",type:"button",onclick:ev=>{ ev.stopPropagation(); open(r.url, "page"); }},"열기"),
+      h("button",{class:"open-btn del-btn",type:"button",title:"이 행을 휴지통으로 옮겨요","aria-label":"이 행을 휴지통으로 옮기기",onclick:async ev=>{
+        ev.stopPropagation();
+        const rid = idOf(r.url);
+        if (await trashPage(rid, plainText(r[c.name]) || "제목 없음", false)){
+          const k = ctx.rows.findIndex(x => idOf(x.url) === rid);
+          if (k >= 0) ctx.rows.splice(k, 1);
+          ctx.redrawAll();
+        }
+      }},"🗑"));
+  }
+  td.append(cv);
+  /* while another cell is being edited, commit it first and then open this one */
+  td.addEventListener("mousedown", ev=>{
+    if (ev.button !== 0 || !ctx.finishActive || td.classList.contains("editing") || ev.target.closest("a,.open-btn,.rel-chip")) return;
+    ev.preventDefault();
+    ctx.openAfter = true;
+    ctx.finishActive(ri, ci);
+  });
+  td.addEventListener("click", ev=>{
+    if (ev.target.closest("a,.open-btn,.rel-chip") || td.classList.contains("editing")) return;
+    if (c.type === "checkbox") saveCell(ctx, c, r, !isYes(r[c.name]), {r:ri, c:ci});
+    else if (editable) editCell(ctx, td, c, r);
+  });
+  td.addEventListener("keydown", ev=>{
+    if (ev.target !== td || td.classList.contains("editing")) return;
+    const mv = {ArrowLeft:[0,-1], ArrowRight:[0,1], ArrowUp:[-1,0], ArrowDown:[1,0]}[ev.key];
+    if (mv){ ev.preventDefault(); focusCell(td, ri + mv[0], ci + mv[1]); return; }
+    if (c.type === "checkbox" && (ev.key === " " || ev.key === "Enter")){ ev.preventDefault(); saveCell(ctx, c, r, !isYes(r[c.name]), {r:ri, c:ci}); return; }
+    if (ev.key === "Enter" || ev.key === "F2"){ ev.preventDefault(); if (editable) editCell(ctx, td, c, r); return; }
+    if (DB_TEXT.has(c.type) && ev.key.length === 1 && !ev.ctrlKey && !ev.metaKey && !ev.altKey){ ev.preventDefault(); editCell(ctx, td, c, r, ev.key); }
+  });
+  return td;
+}
+function toLocalDT(s){ const d = new Date(s); return isNaN(d) ? "" : ymd(d)+"T"+pad(d.getHours())+":"+pad(d.getMinutes()); }
+function editCell(ctx, td, c, r, initial){
+  const ri = +td.dataset.r, ci = +td.dataset.c;
+  let done = false, getVal = () => undefined;
+  const finish = (val, to) => {
+    if (done) return;
+    done = true; ctx.finishActive = null;
+    ctx.focus = to || {r:ri, c:ci};
+    if (val === undefined) ctx.redraw();
+    else saveCell(ctx, c, r, val, ctx.focus);
+  };
+  ctx.finishActive = (tr, tc) => finish(getVal(), {r:tr, c:tc});
+  const keys = ev => {
+    if (ev.isComposing || ev.keyCode === 229) return;
+    if (ev.key === "Escape"){ ev.preventDefault(); finish(undefined); }
+    else if (ev.key === "Enter" && ev.target.tagName !== "BUTTON" && !(ev.target.tagName === "TEXTAREA" && ev.shiftKey)){ ev.preventDefault(); finish(getVal(), {r:ri+1, c:ci}); }
+    else if (ev.key === "Tab" && !ev.target.closest(".dt-pop")){ ev.preventDefault(); finish(getVal(), {r:ri, c:ci + (ev.shiftKey ? -1 : 1)}); }
+  };
+  let ed;
+  if (DB_TEXT.has(c.type)){
+    const multi = c.type === "text";
+    ed = multi ? h("textarea",{class:"cell-in cell-ta",id:"cell-ed",rows:"3",title:"Enter 저장 · Shift+Enter 줄바꿈","aria-label":c.name})
+      : h("input",{class:"cell-in",id:"cell-ed",type:"text",autocomplete:"off",inputmode:c.type==="number"?"decimal":null,"aria-label":c.name});
+    ed.value = initial != null ? initial : (r[c.name] == null ? "" : (multi || c.type === "title" ? plainText(r[c.name]) : String(r[c.name])));
+    getVal = () => ed.value;
+  } else if (c.type === "select" || c.type === "status"){
+    ed = h("select",{class:"cell-in",id:"cell-ed","aria-label":c.name}, h("option",{value:""},"비어 있음"), optionsOf(c).map(o => h("option",{value:o.name}, o.name)));
+    ed.value = r[c.name] || "";
+    getVal = () => ed.value;
+    ed.addEventListener("change", () => finish(ed.value));
+  } else if (c.type === "multi_select"){
+    const sel = new Set(listOf(r[c.name]));
+    const opts = optionsOf(c);
+    ed = h("div",{class:"ms-pop",id:"cell-ed",tabindex:"-1"},
+      opts.length ? opts.map((o, k) => {
+        const cb = h("input",{type:"checkbox",id:"ms-"+k});
+        cb.checked = sel.has(o.name);
+        cb.addEventListener("change", () => { cb.checked ? sel.add(o.name) : sel.delete(o.name); });
+        return h("label",{for:"ms-"+k}, cb, chipFor(c, o.name));
+      }) : h("span",{class:"meta"},"선택지가 없어요. Notion에서 먼저 추가해 주세요."),
+      h("button",{class:"btn",type:"button",onclick:()=>finish([...sel])},"완료"));
+    getVal = () => [...sel];
+    ed.addEventListener("focusout", ev => { if (!ed.contains(ev.relatedTarget)) finish([...sel]); });
+  } else if (c.type === "relation"){
+    const re = relEditor(ctx, td, c, r, finish);
+    ed = re.ed; getVal = re.getVal;
+    ctx.finishActive = (tr, tc) => finish(getVal(), {r:tr, c:tc});
+    td.classList.add("editing");
+    td.replaceChildren(ed);
+    re.focusEl.focus();
+    return;
+  } else {
+    /* start and end are separate fields; "시간 포함" switches both between date and date+time */
+    const s = r["date:"+c.name+":start"] || "", e = r["date:"+c.name+":end"] || "";
+    let dt = /T\d/.test(s) || r["date:"+c.name+":is_datetime"] == 1;
+    const mk = (id, label, val) => {
+      const inp = h("input",{id, type: dt ? "datetime-local" : "date", "aria-label": c.name+" "+label});
+      inp.value = val ? (dt ? toLocalDT(val) : String(val).slice(0, 10)) : "";
+      return inp;
+    };
+    const sIn = mk("dt-start", "시작", s), eIn = mk("dt-end", "종료", e);
+    const timeCb = h("input",{type:"checkbox",id:"dt-time",checked:dt,onchange:ev=>{
+      const ss = sIn.value.slice(0, 10), ee = eIn.value.slice(0, 10);
+      dt = ev.target.checked;
+      sIn.type = eIn.type = dt ? "datetime-local" : "date";
+      sIn.value = ss ? (dt ? ss+"T09:00" : ss) : ""; eIn.value = ee ? (dt ? ee+"T18:00" : ee) : "";
+    }});
+    const iso = v => v ? (dt ? v+":00"+tzOffset() : v) : "";
+    ed = h("div",{class:"dt-pop",id:"cell-ed",tabindex:"-1"},
+      h("label",{for:"dt-start"}, "시작", sIn),
+      h("label",{for:"dt-end"}, "종료 (선택)", eIn),
+      h("label",{class:"dt-time",for:"dt-time"}, timeCb, "시간 포함"),
+      h("div",{class:"io-acts"},
+        h("button",{class:"btn primary",type:"button",onclick:()=>finish(getVal())},"완료"),
+        h("button",{class:"btn ghost",type:"button",onclick:()=>{ sIn.value = ""; eIn.value = ""; finish(getVal()); }},"날짜 지우기")));
+    getVal = () => ({start: iso(sIn.value), end: iso(eIn.value), dt});
+    ed.addEventListener("focusout", ev => { if (!ed.contains(ev.relatedTarget)) finish(getVal()); });
+  }
+  ed.addEventListener("keydown", keys);
+  const popover = c.type === "multi_select" || c.type === "date";
+  if (!popover) ed.addEventListener("blur", () => finish(getVal()));
+  td.classList.add("editing");
+  td.replaceChildren(ed);
+  if (popover){ const f = ed.querySelector("input,button"); (f || ed).focus(); }
+  else ed.focus();
+  if (DB_TEXT.has(c.type)){ if (initial == null) ed.select(); else ed.setSelectionRange(ed.value.length, ed.value.length); }
+}
+async function saveCell(ctx, c, r, nv, focusAt){
+  const pid = idOf(r.url);
+  const before = {...r};
+  const props = {};
+  if (focusAt) ctx.focus = focusAt;
+  if (c.type === "relation"){
+    if (!nv.added.length && !nv.removed.length) return ctx.redraw();
+    ctx.redraw();
+    return saveRelation(ctx, c, r, nv);
+  }
+  if (c.type === "date"){
+    const ks = "date:"+c.name+":start", ke = "date:"+c.name+":end", kt = "date:"+c.name+":is_datetime";
+    const oldS = r[ks] || "", oldE = r[ke] || "";
+    if (oldS === nv.start && oldE === (nv.end || "") && ((r[kt] == 1) === !!nv.dt || !nv.start)) return ctx.redraw();
+    if (nv.end && !nv.start){ toast("종료만 넣을 수는 없어요. 시작 날짜도 넣어 주세요."); return ctx.redraw(); }
+    if (nv.end && nv.end < nv.start){ toast("종료는 시작보다 빠를 수 없어요."); return ctx.redraw(); }
+    if (nv.start){
+      props[ks] = nv.start; props[ke] = nv.end || null; props[kt] = nv.dt ? 1 : 0;      // start, end and the time flag always go together
+      r[ks] = nv.start; r[ke] = nv.end || null; r[kt] = nv.dt ? 1 : 0;
+    } else {
+      props[ks] = null; props[ke] = null; props[kt] = null;
+      r[ks] = null; r[ke] = null; r[kt] = null;
+    }
+  } else if (c.type === "checkbox"){
+    props[c.name] = nv ? "__YES__" : "__NO__"; r[c.name] = props[c.name];
+  } else if (c.type === "multi_select"){
+    if (JSON.stringify(listOf(r[c.name]).sort()) === JSON.stringify([...nv].sort())) return ctx.redraw();
+    props[c.name] = JSON.stringify(nv); r[c.name] = nv;
+  } else if (c.type === "number"){
+    const t = String(nv).trim().replace(/,/g, "");
+    if (t !== "" && isNaN(Number(t))){ toast("숫자만 넣을 수 있어요."); return ctx.redraw(); }
+    const v = t === "" ? null : Number(t);
+    const old = r[c.name] == null || r[c.name] === "" ? null : Number(r[c.name]);
+    if (v === old) return ctx.redraw();
+    props[c.name] = v; r[c.name] = v;
+  } else {
+    const v = String(nv);
+    if (v === plainText(r[c.name])) return ctx.redraw();
+    if (c.type === "title" && !v.trim()){ toast("제목은 비울 수 없어요."); return ctx.redraw(); }
+    props[c.name] = v === "" ? null : v; r[c.name] = v;
+  }
+  ctx.redraw();
+  setSave("saving");
+  try{
+    const s = await updateSchema();
+    await write("notion-update-page", wrapArgs(s, {page_id: pid, command:"update_properties", properties: props}));
+    freshIds.add(pid);
+    setSave("saved");
+  }catch(e){
+    for (const k of Object.keys(r)) delete r[k];
+    Object.assign(r, before);
+    ctx.redraw();
+    setSave("error", e, () => saveCell(ctx, c, r, nv));
+  }
+}
+function newRowTr(ctx, cols){
+  const td = h("td",{colspan:String(cols.length),class:"newrow"});
+  const btn = h("button",{class:"add-row",type:"button"},"＋ 새로 만들기");
+  btn.addEventListener("click", () => {
+    const inp = h("input",{class:"cell-in",id:"new-row",autocomplete:"off",placeholder:"제목을 입력하고 Enter (Esc로 취소)","aria-label":"새 행 제목"});
+    td.replaceChildren(inp);
+    inp.focus();
+    let busy = false;
+    inp.addEventListener("keydown", async ev => {
+      if (ev.isComposing || ev.keyCode === 229) return;
+      if (ev.key === "Escape"){ ev.preventDefault(); busy = true; ctx.redraw(); return; }
+      if (ev.key !== "Enter") return;
+      ev.preventDefault();
+      const t = inp.value.trim();
+      if (!t || busy) return;
+      busy = true; inp.disabled = true;
+      try{
+        const res = await write("notion-create-pages", {parent:{type:"data_source_id", data_source_id: ctx.info.sources[0].replace("collection://","")}, pages:[{properties:{[ctx.info.titleProp]: t}}], allow_async:false});
+        toast("‘"+t+"’ 행을 추가했어요");
+        ctx.addAgain = true;
+        /* add the row locally instead of re-querying, to spare the hourly query allowance */
+        const nid = createdId(res, ctx.info.sources[0].replace("collection://","").replace(/-/g,""));
+        if (nid){ ctx.rows.unshift({url:"https://www.notion.so/"+nid, [ctx.info.titleProp]: t}); ctx.redrawAll(); }
+        else await ctx.refetch();
+      }catch(e){ busy = false; inp.disabled = false; inp.focus(); toast(errInfo(e).msg); }
+    });
+    inp.addEventListener("blur", () => { if (!busy && !inp.value.trim()) ctx.redraw(); });
+  });
+  td.append(btn);
+  return h("tr", null, td);
+}
+function rowTitle(info, r){ return (info.titleProp && plainText(r[info.titleProp])) || "제목 없음"; }
+function rowDate(info, r){ return info.dateProp ? r["date:"+info.dateProp+":start"] : null; }
+function selectChip(info, r){
+  const sp = info.selectProp; if (!sp || !r[sp.name]) return null;
+  const opt = (sp.options||[]).find(o=>o.name===r[sp.name]);
+  return h("span",{class:"chip c-"+((opt&&opt.color)||"gray")}, r[sp.name]);
+}
+function rowList(info, rows){
+  if (!rows.length) return h("div",{class:"panel-msg"}, h("h2",{text:"아직 항목이 없어요"}), h("p",{text:"‘새로 만들기’로 첫 항목을 추가해 보세요."}));
+  return h("div",{class:"rows"}, rows.map(r=>{
+    const extras = info.textProps.map(k=>plainText(r[k])).filter(Boolean);
+    const chip = selectChip(info, r);
+    return h("button",{class:"row",type:"button",onclick:()=>open(r.url,"page")},
+      h("span",{class:"rt"}, rowTitle(info, r)),
+      h("span",{class:"rd"}, fmtDate(rowDate(info, r))),
+      (chip || extras.length) ? h("span",{class:"rx"}, chip, extras.map(x=>h("span",null,x))) : null);
+  }));
+}
+function calendar(info, st, rows, redraw){
+  const byDay = {};
+  for (const r of rows){
+    const s = dayKey(rowDate(info, r)); if (!s) continue;
+    const e = dayKey(r["date:"+info.dateProp+":end"]) || s;
+    let d = new Date(s+"T00:00:00"); const end = new Date(e+"T00:00:00");
+    for (let i=0; d <= end && i < 62; i++){ (byDay[ymd(d)] ||= []).push(r); d.setDate(d.getDate()+1); }
+  }
+  const m = st.month, y = m.getFullYear(), mo = m.getMonth();
+  const start = new Date(y, mo, 1 - new Date(y, mo, 1).getDay());
+  const today = ymd(new Date());
+  const cells = DOW.map((d,i)=>h("div",{class:"dow"}, d));
+  for (let i=0; i<42; i++){
+    const d = new Date(start); d.setDate(start.getDate()+i);
+    if (i >= 35 && d.getMonth() !== mo) break;
+    const k = ymd(d), evs = byDay[k] || [];
+    const cls = "day"+(d.getMonth()!==mo?" out":"")+(k===today?" today":"")+(st.sel===k?" sel":"");
+    cells.push(h("div",{class:cls, onclick:()=>{ st.sel = k; redraw(); }},
+      h("span",{class:"dn"}, d.getDate()),
+      evs.slice(0,3).map(r=>h("button",{class:"ev",type:"button",title:rowTitle(info,r), onclick:ev=>{ ev.stopPropagation(); open(r.url,"page"); }}, rowTitle(info, r))),
+      evs.length > 3 ? h("span",{class:"more"}, "+"+(evs.length-3)) : null));
+  }
+  const selKey = st.sel || (today.startsWith(y+"-"+pad(mo+1)) ? today : null);
+  const selRows = selKey ? (byDay[selKey] || []) : [];
+  return [
+    h("div",{class:"cal-head"},
+      h("h2",null, y+"년 "+(mo+1)+"월"),
+      h("button",{class:"btn ghost",type:"button",onclick:()=>{ st.month = new Date(y, mo-1, 1); st.sel=null; redraw(); },"aria-label":"이전 달"},"‹"),
+      h("button",{class:"btn ghost",type:"button",onclick:()=>{ const n=new Date(); st.month=new Date(n.getFullYear(), n.getMonth(), 1); st.sel=ymd(n); redraw(); }},"오늘"),
+      h("button",{class:"btn ghost",type:"button",onclick:()=>{ st.month = new Date(y, mo+1, 1); st.sel=null; redraw(); },"aria-label":"다음 달"},"›")),
+    h("div",{class:"cal"}, cells),
+    selKey ? h("section",{class:"day-list"},
+      h("h3",null, fmtDate(selKey)+" 일정"),
+      selRows.length ? rowList(info, selRows) : h("p",{class:"meta"},"이 날은 일정이 없어요. 날짜를 누른 뒤 ‘새로 만들기’로 추가할 수 있어요.")) : null
+  ];
+}
+function tzOffset(){
+  const o = -new Date().getTimezoneOffset(), s = o >= 0 ? "+" : "-", a = Math.abs(o);
+  return s+pad(Math.floor(a/60))+":"+pad(a%60);
+}
+function addForm(info, st, done){
+  const f = h("form",{class:"form"});
+  const titleIn = h("input",{id:"f-title",required:true,placeholder:"예: 병원 예약, 친구 약속",autocomplete:"off"});
+  const fields = [h("label",{class:"full",for:"f-title"}, "제목", titleIn)];
+  let dateIn, timeIn, selIn;
+  if (info.dateProp){
+    dateIn = h("input",{id:"f-date",type:"date",value: st.sel || ymd(new Date())});
+    timeIn = h("input",{id:"f-time",type:"time"});
+    fields.push(h("label",{for:"f-date"}, info.dateProp, dateIn), h("label",{for:"f-time"}, "시간 (선택)", timeIn));
+  }
+  if (info.selectProp){
+    selIn = h("select",{id:"f-sel"}, h("option",{value:""},"선택 안 함"), (info.selectProp.options||[]).map(o=>h("option",{value:o.name}, o.name)));
+    fields.push(h("label",{for:"f-sel"}, info.selectProp.name, selIn));
+  }
+  const textIns = info.textProps.map((k,i)=>{ const inp = h("input",{id:"f-t"+i,autocomplete:"off"}); fields.push(h("label",{for:"f-t"+i}, k, inp)); return [k, inp]; });
+  const msg = h("span",{class:"msg",role:"alert"});
+  const submit = h("button",{class:"btn primary",type:"submit"},"Notion에 추가");
+  fields.push(h("div",{class:"acts"}, msg, h("button",{class:"btn",type:"button",onclick:()=>{ st.adding=false; f.remove(); }},"취소"), submit));
+  f.append(...fields);
+  f.addEventListener("submit", async ev=>{
+    ev.preventDefault();
+    const t = titleIn.value.trim();
+    if (!t){ msg.textContent = "제목을 입력해 주세요."; titleIn.focus(); return; }
+    const props = {[info.titleProp]: t};
+    if (dateIn && dateIn.value){
+      if (timeIn.value){ props["date:"+info.dateProp+":start"] = dateIn.value+"T"+timeIn.value+":00"+tzOffset(); props["date:"+info.dateProp+":is_datetime"] = 1; }
+      else { props["date:"+info.dateProp+":start"] = dateIn.value; props["date:"+info.dateProp+":is_datetime"] = 0; }
+    }
+    if (selIn && selIn.value) props[info.selectProp.name] = selIn.value;
+    for (const [k, inp] of textIns) if (inp.value.trim()) props[k] = inp.value.trim();
+    submit.disabled = true; submit.textContent = "추가하는 중…"; msg.textContent = "";
+    try{
+      await write("notion-create-pages", {parent:{type:"data_source_id", data_source_id: info.sources[0].replace("collection://","")}, pages:[{properties: props}], allow_async:false});
+      toast("Notion에 ‘"+t+"’을(를) 추가했어요");
+      if (dateIn && dateIn.value){ st.sel = dateIn.value; const d = new Date(dateIn.value+"T00:00:00"); st.month = new Date(d.getFullYear(), d.getMonth(), 1); }
+      await done();
+    }catch(e){
+      const info2 = errInfo(e);
+      const ambiguous = ["server_unavailable","upstream_error",undefined].includes(e && e.code);
+      msg.textContent = ambiguous ? "추가됐는지 확실하지 않아요. ‘새로고침’으로 목록을 확인한 뒤 필요하면 다시 추가해 주세요." : info2.msg;
+      submit.disabled = false; submit.textContent = "Notion에 추가";
+    }
+  });
+  setTimeout(()=>titleIn.focus(), 0);
+  return f;
+}
+
+/* ---------- boot ---------- */
+renderHome();
+(async ()=>{
+  mcp = await window.claude?.use?.("mcp").catch(()=>null) ?? null;
+  if (!mcp){
+    setStatus("bad","Notion 연결 안 됨");
+    $("privList").replaceChildren(h("div",{class:"note"},"Notion 연결을 쓸 수 없어요."));
+    $("recentList").replaceChildren();
+    view().replaceChildren(h("div",{class:"panel-msg"}, h("h2",{text:"이 화면에서는 Notion에 연결할 수 없어요"}), h("p",{text:"claude.ai에 로그인한 상태로 이 앱을 열면 내 Notion 노트를 보고 고칠 수 있어요."}), h("p",{text:"다른 사람이 공유해 준 앱이라면 Notion 연결이 막혀 있을 수 있어요. 공유한 사람에게 앱 파일을 받아 내 Claude에서 직접 만들어 주세요."})));
+    return;
+  }
+  await loadSidebar(false);
+  const last = load("last");
+  if (last && last.id && privPages.length) open(last.id, last.type, {noPush:true});
+})();
+</script>
